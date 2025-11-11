@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Heart, Star } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useAppStore } from "@/store/useAppStore";
 
 interface Product {
     _id: string;
@@ -12,32 +13,17 @@ interface Product {
 }
 
 export default function ProductCard({ product }: { product: Product }) {
-    const [isLiked, setIsLiked] = useState(false);
+    const { wishlist, addToWishlist, removeFromWishlist } = useAppStore();
+  const isLiked = wishlist.includes(product._id);
 
-    const discount = Math.round(
-        ((product.price.original - product.price.current) / product.price.original) * 100
-    );
+  const handleToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    isLiked ? removeFromWishlist(product._id) : addToWishlist(product._id);
+  };
 
-    const handleLikeToggle = () => {
-        const likedItems: string[] = JSON.parse(localStorage.getItem("wishlist") || "[]");
-
-        if (isLiked) {
-            const updated = likedItems.filter((id) => id !== product._id);
-            localStorage.setItem("wishlist", JSON.stringify(updated));
-            setIsLiked(false);
-        } else {
-            likedItems.push(product._id);
-            localStorage.setItem("wishlist", JSON.stringify(likedItems));
-            setIsLiked(true);
-        }
-
-        window.dispatchEvent(new Event("wishlistUpdated"));
-    };
-
-    useEffect(() => {
-        const likedItems: string[] = JSON.parse(localStorage.getItem("wishlist") || "[]");
-        setIsLiked(likedItems.includes(product._id));
-    }, [product._id]);
+  const discount = Math.round(
+    ((product.price.original - product.price.current) / product.price.original) * 100
+  );
 
     return (
         <div className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-green-200 transition-all duration-300 hover:shadow-xl">
@@ -58,7 +44,7 @@ export default function ProductCard({ product }: { product: Product }) {
                     <button
                         onClick={(e) => {
                             e.preventDefault();
-                            handleLikeToggle();
+                            handleToggle(e);
                         }}
                         className="absolute top-3 right-3 w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-md hover:scale-110 transition"
                     >

@@ -1,75 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Heart, ArrowLeft, Loader2 } from "lucide-react";
 import ProductCard from "./ProductCard";
 import Link from "next/link";
-
-interface Product {
-  _id: string;
-  slug: string;
-  title: string;
-  brand: string;
-  imageUrls: string[];
-  price: {
-    current: number;
-    original: number;
-  };
-}
+import { useWishlistStore } from "@/store/useWishlistStore";
 
 export default function WishlistPage() {
-  const [wishlistIds, setWishlistIds] = useState<string[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [page, setPage] = useState<number>(1);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [totalPages, setTotalPages] = useState<number>(0);
-
-  const PAGE_SIZE = 25;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 
-  // ✅ Load wishlist IDs from localStorage
+  const {
+    wishlist,
+    products,
+    loading,
+    totalPages,
+    currentPage,
+    fetchWishlistProducts,
+    removeFromWishlist,
+  } = useWishlistStore();
+
   useEffect(() => {
-    const ids = JSON.parse(localStorage.getItem("wishlist") || "[]");
-    setWishlistIds(ids);
-    setTotalPages(Math.ceil(ids.length / PAGE_SIZE));
-  }, []);
+    console.log("💾 Wishlist from store:", wishlist);
+    if (wishlist.length > 0) {
+      fetchWishlistProducts(baseUrl, currentPage);
+    } else {
+      console.warn("⚠️ Wishlist empty in Zustand.");
+    }
+  }, [baseUrl, wishlist.length, currentPage]);
 
-  // ✅ Fetch products for current page
-  useEffect(() => {
-    if (wishlistIds.length === 0) return;
-
-    const start = (page - 1) * PAGE_SIZE;
-    const end = start + PAGE_SIZE;
-    const currentIds = wishlistIds.slice(start, end);
-
-    setLoading(true);
-    fetch(`${baseUrl}/product/wishlist`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ productId: currentIds }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.statusCode === 200) setProducts(data.data);
-        else setProducts([]);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching wishlist:", err);
-        setLoading(false);
-      });
-  }, [page, wishlistIds, baseUrl]);
-
-  // ✅ Remove item from wishlist
-  const handleRemove = (id: string) => {
-    const updated = wishlistIds.filter((itemId) => itemId !== id);
-    localStorage.setItem("wishlist", JSON.stringify(updated));
-    setWishlistIds(updated);
-    if (products.length === 1 && page > 1) setPage(page - 1);
-  };
 
   // ✅ Empty Wishlist View
-  if (wishlistIds.length === 0) {
+  if (wishlist.length === 0) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-gray-600">
         <Heart className="w-16 h-16 text-gray-400 mb-4" />
@@ -84,14 +45,13 @@ export default function WishlistPage() {
     );
   }
 
-  // ✅ Wishlist with Products
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h6 className="text-2xl font-bold text-gray-800">My Wishlist</h6>
           <p className="text-gray-500 text-sm">
-            Showing {products.length} of {wishlistIds.length} items
+            Showing {products.length} of {wishlist.length} items
           </p>
         </div>
 
@@ -111,29 +71,31 @@ export default function WishlistPage() {
         {totalPages > 1 && (
           <div className="flex justify-center items-center gap-3 mt-10">
             <button
-              disabled={page === 1}
-              onClick={() => setPage((p) => p - 1)}
-              className={`px-4 py-2 rounded-lg font-medium border ${
-                page === 1
-                  ? "text-gray-400 border-gray-200 cursor-not-allowed"
-                  : "text-green-600 border-green-600 hover:bg-green-50"
-              }`}
+              disabled={currentPage === 1}
+              onClick={() =>
+                fetchWishlistProducts(baseUrl, currentPage - 1)
+              }
+              className={`px-4 py-2 rounded-lg font-medium border ${currentPage === 1
+                ? "text-gray-400 border-gray-200 cursor-not-allowed"
+                : "text-green-600 border-green-600 hover:bg-green-50"
+                }`}
             >
               Prev
             </button>
 
             <span className="text-gray-700 font-medium">
-              Page {page} of {totalPages}
+              Page {currentPage} of {totalPages}
             </span>
 
             <button
-              disabled={page === totalPages}
-              onClick={() => setPage((p) => p + 1)}
-              className={`px-4 py-2 rounded-lg font-medium border ${
-                page === totalPages
-                  ? "text-gray-400 border-gray-200 cursor-not-allowed"
-                  : "text-green-600 border-green-600 hover:bg-green-50"
-              }`}
+              disabled={currentPage === totalPages}
+              onClick={() =>
+                fetchWishlistProducts(baseUrl, currentPage + 1)
+              }
+              className={`px-4 py-2 rounded-lg font-medium border ${currentPage === totalPages
+                ? "text-gray-400 border-gray-200 cursor-not-allowed"
+                : "text-green-600 border-green-600 hover:bg-green-50"
+                }`}
             >
               Next
             </button>

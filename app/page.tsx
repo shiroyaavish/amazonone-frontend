@@ -1,42 +1,43 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Hero from "@/components/Hero";
 import Section from "@/components/Section";
 import CategorySection from "@/components/CategorySection";
+import { useHomeStore } from "@/store/useHomeStore";
 
 export default function Home() {
-  const [popular, setPopular] = useState<any[]>([]);
-  const [newRelease, setNewRelease] = useState<any[]>([]);
-  const [bestSeller, setBestSeller] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 
+  const {
+    popular,
+    newRelease,
+    bestSeller,
+    categories,
+    loading,
+    fetchHomeData,
+  } = useHomeStore();
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [popularRes, newRes, bestRes, catRes] = await Promise.all([
-          fetch(`${baseUrl}/product?page=1&limit=10&isPopular=true`),
-          fetch(`${baseUrl}/product?page=1&limit=10&newRelease=true`),
-          fetch(`${baseUrl}/product?page=1&limit=10&bestSeller=true`),
-          fetch(`${baseUrl}/category/products`),
-        ]);
+    if (
+      popular.length === 0 &&
+      newRelease.length === 0 &&
+      bestSeller.length === 0 &&
+      categories.length === 0
+    ) {
+      fetchHomeData(baseUrl);
+    }
+  }, [baseUrl, fetchHomeData, popular.length, newRelease.length, bestSeller.length, categories.length]);
 
-        const popularData = await popularRes.json();
-        const newData = await newRes.json();
-        const bestData = await bestRes.json();
-        const catData = await catRes.json();
-
-        setPopular(popularData.data || []);
-        setNewRelease(newData.data || []);
-        setBestSeller(bestData.data || []);
-        setCategories(catData.data || []);
-      } catch (err) {
-        console.error("Fetch error:", err);
-      }
-    };
-    fetchData();
-  }, []);
+  if (loading)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading products...</p>
+        </div>
+      </div>
+    );
 
   return (
     <>

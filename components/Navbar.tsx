@@ -3,35 +3,14 @@
 import { useEffect, useState } from "react";
 import { Search, Heart } from "lucide-react";
 import Link from "next/link";
+import { useAppStore } from "@/store/useAppStore";
 
 export default function Navbar() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [wishlistCount, setWishlistCount] = useState(0);
+  const wishlist = useAppStore((s) => s.wishlist);
 
-  const updateWishlistCount = () => {
-    const wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
-    setWishlistCount(wishlist.length);
-  };
-
-  useEffect(() => {
-    updateWishlistCount();
-
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "wishlist") updateWishlistCount();
-    };
-
-    const handleCustomEvent = () => updateWishlistCount();
-
-    window.addEventListener("storage", handleStorageChange);
-    window.addEventListener("wishlistUpdated", handleCustomEvent);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("wishlistUpdated", handleCustomEvent);
-    };
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,9 +26,8 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 w-full z-50 transform transition-all duration-300 ${
-          isVisible ? "translate-y-0" : "-translate-y-full"
-        } ${isScrolled ? "bg-white/80 backdrop-blur-xl shadow-md" : "bg-white"}`}
+        className={`fixed top-0 left-0 w-full z-50 transform transition-all duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"
+          } ${isScrolled ? "bg-white/80 backdrop-blur-xl shadow-md" : "bg-white"}`}
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-6">
           <div className="flex items-center justify-between gap-2 h-16 md:h-20">
@@ -70,9 +48,9 @@ export default function Navbar() {
 
             <Link href="/wishlist" className="relative">
               <Heart className="w-6 h-6 text-gray-600 hover:text-green-600 transition" />
-              {wishlistCount > 0 && (
+              {wishlist.length > 0 && (
                 <span className="absolute -top-2 -right-2 bg-green-600 text-white text-xs font-semibold rounded-full w-4 h-4 flex items-center justify-center">
-                  {wishlistCount}
+                  {wishlist.length}
                 </span>
               )}
             </Link>

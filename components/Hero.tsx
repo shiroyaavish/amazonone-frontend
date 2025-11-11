@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useBannerStore } from "@/store/userBannerStore";
 
 interface Banner {
   _id: string;
@@ -10,56 +11,39 @@ interface Banner {
   subtitle: string;
   media: string;
   type: "image" | "video";
-  productId: string;
+  url: string;
+  isActive: boolean;
 }
 
 export default function Hero() {
   const router = useRouter();
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [current, setCurrent] = useState<number>(0);
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 
-  const banners: Banner[] = [
-    {
-      _id: "690a2c36f01f0d11f4394af3",
-      title: "Gadgets you'll love. Prices you'll trust.",
-      subtitle: "Starts from ₹499",
-      media: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1920&q=80",
-      type: "image",
-      productId: "690a2c36f01f0d11f4394af3",
-    },
-    {
-      _id: "690ccea9fd79b2f16e2a79a2",
-      title: "Run with Style 👟",
-      subtitle: "Puma Dazzler Sneakers",
-      media: "https://videos.pexels.com/video-files/3735652/3735652-hd_1920_1080_25fps.mp4",
-      type: "video",
-      productId: "690ccea9fd79b2f16e2a79a2",
-    },
-    {
-      _id: "690a2bd7f01f0d11f4394aba",
-      title: "Hear the Beat 🎧",
-      subtitle: "Premium Audio at Best Price",
-      media: "https://videos.pexels.com/video-files/3735652/3735652-hd_1920_1080_25fps.mp4",
-      type: "video",
-      productId: "690a2bd7f01f0d11f4394aba",
-    },
-  ];
+  const { banners, loading, fetchBanners } = useBannerStore();
+
+  // ✅ Fetch only once on mount
+  useEffect(() => {
+    if (banners.length === 0 && baseUrl) fetchBanners(baseUrl);
+  }, [baseUrl, banners.length, fetchBanners]);
 
   // Auto-slide every 6s
   useEffect(() => {
+    if (banners.length === 0) return;
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % banners.length);
     }, 6000);
     return () => clearInterval(interval);
   }, [banners.length]);
 
-  // Play only the current video
+  // Play current video only
   useEffect(() => {
     videoRefs.current.forEach((vid, index) => {
       if (vid) {
         if (index === current) {
           vid.currentTime = 0;
-          vid.play().catch(() => {});
+          vid.play().catch(() => { });
         } else {
           vid.pause();
         }
@@ -67,10 +51,22 @@ export default function Hero() {
     });
   }, [current]);
 
-  const handleRedirect = (id: string) => {
-    router.push(`/product/${id}`);
+  const handleRedirect = (url: string) => {
+    if (url.startsWith("http")) {
+      window.open(url, "_blank");
+      return;
+    }
+    router.push(`/product/${url}`);
   };
 
+  if (loading)
+    return (
+      <div className="min-h-[480px] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+
+  if (banners.length === 0) return null;
   return (
     <div className="relative w-full overflow-hidden rounded-2xl mt-6 max-h-[480px]">
       {/* Slide container */}
@@ -81,7 +77,7 @@ export default function Hero() {
         {banners.map((banner, i) => (
           <div
             key={banner._id}
-            onClick={() => handleRedirect(banner.productId)}
+            onClick={() => handleRedirect(banner.url)}
             className="w-full h-[480px] shrink-0 relative cursor-pointer"
           >
             {banner.type === "video" ? (
@@ -114,7 +110,7 @@ export default function Hero() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleRedirect(banner.productId);
+                  handleRedirect(banner.url);
                 }}
                 className="mt-5 px-6 py-2 bg-white/10 backdrop-blur-sm border border-white text-white rounded-full hover:bg-white hover:text-black transition-all duration-300 hover:scale-105"
               >
@@ -131,9 +127,8 @@ export default function Hero() {
           <button
             key={i}
             onClick={() => setCurrent(i)}
-            className={`w-3 h-3 rounded-full transition-all ${
-              current === i ? "bg-white" : "bg-gray-400/60"
-            }`}
+            className={`w-3 h-3 rounded-full transition-all ${current === i ? "bg-white" : "bg-gray-400/60"
+              }`}
           ></button>
         ))}
       </div>
