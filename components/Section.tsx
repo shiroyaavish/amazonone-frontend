@@ -35,7 +35,7 @@ export default function Section({ title, products = [], id = null }: SectionProp
   };
 
   const handleViewCategory = (categoryId: string) => {
-    return `/product?categories=${categoryId}`
+    return `/product?category=${categoryId}`
   };
   const handleView = () => {
     if (id === "best_seller") {
