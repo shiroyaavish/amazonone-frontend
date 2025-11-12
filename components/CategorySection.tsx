@@ -1,5 +1,6 @@
 import React from "react";
 import Section from "./Section";
+import { useRouter } from "next/router";
 
 interface Product {
   _id: string;
@@ -20,11 +21,12 @@ interface Category {
 }
 
 export default function CategorySection({ categories = [] }: { categories?: Category[] }) {
+
   return (
     <section className="mt-12">
       {categories.map((cat) => (
         <div key={cat._id} className="mb-10">
-          <Section title={cat.name} products={cat.products.slice(0, 5)} />
+          <Section title={cat.name} products={cat.products.slice(0, 5)} id={cat._id} />
         </div>
       ))}
     </section>

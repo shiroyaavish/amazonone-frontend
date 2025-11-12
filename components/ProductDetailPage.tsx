@@ -14,19 +14,15 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useProductStore } from "@/store/useProductStore";
 import { useWishlistStore } from "@/store/useWishlistStore";
-import { useAppStore } from "@/store/useAppStore";
+import AccordionGroup from "./AccordionGroup";
 
 export default function ProductDetailPage({ slug }: { slug: string }) {
     const router = useRouter();
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 
-    const { product, loading, fetchProduct } = useProductStore();
-    const {
-        toggleWishlist,
-        isInWishlist,
-    } = useWishlistStore();
+    const { product, productLoading, findOne: fetchProduct } = useProductStore();
 
-    const { wishlist, addToWishlist, removeFromWishlist } = useAppStore();
+    const { wishlist, addToWishlist, removeFromWishlist } = useWishlistStore();
 
     const isLiked = product ? wishlist.includes(product._id) : false;
 
@@ -43,7 +39,7 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
         if (slug && baseUrl) fetchProduct(baseUrl, slug);
     }, [slug, baseUrl, fetchProduct]);
 
-    if (loading)
+    if (productLoading)
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
@@ -230,22 +226,21 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                 {/* ⚙️ Specifications */}
                 {product.specifications?.length ? (
                     <div className="mt-12 border-t pt-8">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Specifications</h2>
-                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-100">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {product.specifications.map((spec, idx) => (
-                                    <div
-                                        key={idx}
-                                        className="flex justify-between py-2 border-b border-gray-200 last:border-0"
-                                    >
-                                        <span className="text-sm font-bold text-gray-700">{spec.key}</span>
-                                        <span className="text-sm text-gray-600">{spec.value}</span>
-                                    </div>
-                                ))}
-                            </div>
+                        <h2 className="text-xl font-semibold text-gray-900 mb-6">Specifications</h2>
+
+                        <div className="space-y-4">
+                            {product.specifications.map((specGroup, groupIdx) => (
+                                <AccordionGroup key={groupIdx} title={specGroup.key} details={specGroup.details} />
+                            ))}
                         </div>
                     </div>
-                ) : null}
+                ) : (
+                    <div className="mt-12 border-t pt-8 text-center text-gray-500">
+                        No specifications available
+                    </div>
+                )}
+
+
             </div>
         </div >
     );

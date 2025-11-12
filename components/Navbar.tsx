@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { Search, Heart } from "lucide-react";
 import Link from "next/link";
-import { useAppStore } from "@/store/useAppStore";
+import { useWishlistStore } from "@/store/useWishlistStore";
 
 export default function Navbar() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
-  const wishlist = useAppStore((s) => s.wishlist);
+  const wishlist = useWishlistStore((s) => s.wishlist);
 
 
   useEffect(() => {

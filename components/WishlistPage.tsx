@@ -20,13 +20,12 @@ export default function WishlistPage() {
   } = useWishlistStore();
 
   useEffect(() => {
-    console.log("💾 Wishlist from store:", wishlist);
     if (wishlist.length > 0) {
       fetchWishlistProducts(baseUrl, currentPage);
     } else {
       console.warn("⚠️ Wishlist empty in Zustand.");
     }
-  }, [baseUrl, wishlist.length, currentPage]);
+  }, [baseUrl, wishlist.length, currentPage,products.length]);
 
 
   // ✅ Empty Wishlist View

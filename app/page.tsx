@@ -28,7 +28,6 @@ export default function Home() {
       fetchHomeData(baseUrl);
     }
   }, [baseUrl, fetchHomeData, popular.length, newRelease.length, bestSeller.length, categories.length]);
-
   if (loading)
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -42,9 +41,9 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <Section title="Popular Products" products={popular} />
-      <Section title="New Releases" products={newRelease} />
-      <Section title="Best Sellers" products={bestSeller} />
+      <Section title="Popular Products" products={popular} id="popular_products" />
+      <Section title="New Releases" products={newRelease} id="new_release" />
+      <Section title="Best Sellers" products={bestSeller} id="best_seller" />
       <CategorySection categories={categories} />
     </>
   );

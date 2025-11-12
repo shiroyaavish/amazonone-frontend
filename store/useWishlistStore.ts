@@ -41,15 +41,14 @@ export const useWishlistStore = create<WishlistState>()(
         set((state) => {
           if (state.wishlist.includes(id)) return state;
           const updated = [...state.wishlist, id];
-          console.log("✅ Added to wishlist:", updated);
           return { wishlist: updated };
         }),
 
       removeFromWishlist: (id) =>
         set((state) => {
           const updated = state.wishlist.filter((x) => x !== id);
-          console.log("🗑 Removed from wishlist:", updated);
-          return { wishlist: updated };
+          const products = state.products.filter((x) => x._id !== id);
+          return { ...state, wishlist: updated, products };
         }),
 
       toggleWishlist: (id) =>
@@ -57,7 +56,6 @@ export const useWishlistStore = create<WishlistState>()(
           const updated = state.wishlist.includes(id)
             ? state.wishlist.filter((x) => x !== id)
             : [...state.wishlist, id];
-          console.log("❤️ Wishlist toggled:", updated);
           return { wishlist: updated };
         }),
 
@@ -66,7 +64,6 @@ export const useWishlistStore = create<WishlistState>()(
       fetchWishlistProducts: async (baseUrl: string, page = 1) => {
         const { wishlist } = get();
         if (!wishlist || wishlist.length === 0) {
-          console.warn("⚠️ Empty wishlist, skipping fetch");
           set({ products: [], totalPages: 0 });
           return;
         }
@@ -76,20 +73,16 @@ export const useWishlistStore = create<WishlistState>()(
         const end = start + PAGE_SIZE;
         const currentIds = wishlist.slice(start, end);
 
-        console.log("📦 Sending productIds:", currentIds);
-
         set({ loading: true });
 
         try {
           const res = await fetch(`${baseUrl}/product/wishlist`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            // ⚠️ Change this key to match your backend — either "productId" or "productIds"
             body: JSON.stringify({ productId: currentIds }),
           });
 
           const data = await res.json();
-          console.log("📥 API Response:", data);
 
           if (data?.statusCode === 200 && Array.isArray(data.data)) {
             set({
@@ -99,17 +92,15 @@ export const useWishlistStore = create<WishlistState>()(
               loading: false,
             });
           } else {
-            console.warn("⚠️ Unexpected API format:", data);
             set({ products: [], loading: false });
           }
         } catch (err) {
-          console.error("🚨 Error fetching wishlist:", err);
           set({ loading: false });
         }
       },
     }),
     {
-      name: "wishlist", // must match your old localStorage key
+      name: "wishlist",
     }
   )
 );
