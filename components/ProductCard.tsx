@@ -28,8 +28,8 @@ export default function ProductCard({ product }: { product: Product }) {
     );
 
     return (
-        <div className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-green-200 transition-all duration-300 hover:shadow-xl">
-            <Link href={`/product/${product.slug}`}>
+        <div className="group bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-green-200 transition-all duration-300 hover:shadow-lg">
+            <a href={`/product/${product.slug}`}>
                 <div className="relative aspect-square overflow-hidden bg-gray-50">
                     <img
                         src={product.imageUrls?.[0]}
@@ -37,91 +37,66 @@ export default function ProductCard({ product }: { product: Product }) {
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
 
-                    {/* 🏷️ Product Tag — with improved UX */}
+                    {/* Product Tag */}
                     {(product.isPopular || product.bestSeller || product.newRelease || discount > 0) && (
-                        <div className="absolute top-3 left-3 z-10">
+                        <div className="absolute top-2 left-2 z-10">
                             {product.isPopular ? (
-                                <span className="bg-linear-to-r from-emerald-500 to-green-600 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
-                                    🌿 Popular Pick
+                                <span className="bg-linear-to-r from-emerald-500 to-green-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1">
+                                    🌿 Popular
                                 </span>
                             ) : product.bestSeller ? (
-                                <span className="bg-linear-to-r from-green-600 to-teal-600 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
+                                <span className="bg-linear-to-r from-green-600 to-teal-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1">
                                     🏆 Best Seller
                                 </span>
                             ) : product.newRelease ? (
-                                <span className="bg-linear-to-r from-green-600 to-teal-600 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
-                                    🏆 Best Seller
+                                <span className="bg-linear-to-r from-blue-500 to-indigo-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1">
+                                    ✨ New
                                 </span>
-                            )
-                                : null
-                                //  (
-                                //     <span className="bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg shadow-md">
-                                //         {discount}% OFF
-                                //     </span>
-                                // )
-                            }
+                            ) : null}
                         </div>
                     )}
 
-
-
                     <button
-                        onClick={(e) => {
-                            e.preventDefault();
-                            handleToggle(e);
-                        }}
-                        className="absolute top-3 right-3 w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-md hover:scale-110 transition"
+                        onClick={handleToggle}
+                        className="absolute top-2 right-2 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-md hover:scale-110 transition"
                     >
-                        <Heart className={`w-5 h-5 ${isLiked ? "fill-red-500 text-red-500" : "text-gray-600"}`} />
+                        <Heart className={`w-4 h-4 ${isLiked ? "fill-red-500 text-red-500" : "text-gray-600"}`} />
                     </button>
                 </div>
-                <div className="p-4">
-                    <p className="text-xs font-medium text-green-600 uppercase tracking-wide mb-1">
+
+                <div className="p-3">
+                    <p className="text-[10px] font-medium text-green-600 uppercase tracking-wide mb-0.5">
                         {product.brand}
                     </p>
-                    <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 mb-2 min-h-10">
+                    <h3 className="text-xs font-semibold text-gray-900 line-clamp-2 mb-1.5 min-h-8 leading-tight">
                         {product.title}
                     </h3>
-                    <div className="flex items-center gap-1 mb-3">
+                    <div className="flex items-center gap-1 mb-2">
                         <div className="flex gap-0.5">
                             {[...Array(5)].map((_, i) => (
                                 <Star
                                     key={i}
-                                    className={`w-3.5 h-3.5 ${i < 4 ? "fill-yellow-400 text-yellow-400" : "fill-gray-200"}`}
+                                    className={`w-3 h-3 ${i < 4 ? "fill-yellow-400 text-yellow-400" : "fill-gray-200 text-gray-200"}`}
                                 />
                             ))}
                         </div>
-                        <span className="text-xs text-gray-500 ml-1">(4.0)</span>
+                        <span className="text-[10px] text-gray-500 ml-0.5">(4.0)</span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
-                        <div style={{ fontWeight: 700 }}>₹{product.price?.current}</div>
+                    <div className="flex items-center gap-1.5">
+                        <span className="text-sm font-bold text-gray-900">₹{product.price?.current}</span>
                         {product.price?.original && (
-                            <div
-                                style={{
-                                    color: '#6b7280',
-                                    textDecoration: 'line-through',
-                                    fontSize: 12,
-                                }}
-                            >
+                            <span className="text-[10px] text-gray-400 line-through">
                                 ₹{product.price.original}
-                            </div>
+                            </span>
                         )}
                         {product.price?.discount != null && (
-                            <div
-                                style={{
-                                    color: '#16a34a',
-                                    backgroundColor: '#d1fae5',
-                                    borderRadius: 999,
-                                    padding: '2px 8px',
-                                    fontSize: 12,
-                                }}
-                            >
+                            <span className="text-[10px] font-medium text-red-600 bg-red-50 rounded-full px-1.5 py-0.5">
                                 {product.price.discount}% off
-                            </div>
+                            </span>
                         )}
                     </div>
                 </div>
-            </Link >
-        </div >
+            </a>
+        </div>
     );
 }

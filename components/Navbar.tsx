@@ -3,14 +3,26 @@
 import { useEffect, useState } from "react";
 import { Search, Heart } from "lucide-react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useWishlistStore } from "@/store/useWishlistStore";
 
 export default function Navbar() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
-  const wishlist = useWishlistStore((s) => s.wishlist);
+  const [searchQuery, setSearchQuery] = useState("");
 
+  const wishlist = useWishlistStore((s) => s.wishlist);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Initialize search query from URL params
+  useEffect(() => {
+    const query = searchParams.get("search");
+    if (query) {
+      setSearchQuery(query);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,6 +34,17 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
+
+  const handleInputFocus = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/product?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
 
   return (
     <>
@@ -36,14 +59,18 @@ export default function Navbar() {
             </Link>
 
             <div className="flex-1 flex justify-center">
-              <div className="relative w-full max-w-xl">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <form className="relative w-full max-w-xl">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
                 <input
                   type="text"
+                  value={searchQuery}
+                  onChangeCapture={handleInputChange}
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputFocus}
                   placeholder="Search for products..."
-                  className="w-full pl-10 pr-3 py-3 bg-gray-50 rounded-2xl outline-none text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-green-500"
+                  className="w-full pl-10 pr-3 py-3 bg-gray-50 rounded-2xl outline-none text-gray-700 placeholder-gray-400 focus:ring-1 focus:ring-green-100"
                 />
-              </div>
+              </form>
             </div>
 
             <Link href="/wishlist" className="relative">

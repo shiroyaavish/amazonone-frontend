@@ -1,7 +1,5 @@
 import { Suspense } from "react";
-import { Loader2, SlidersHorizontal } from "lucide-react";
-import ProductCard from "@/components/ProductCard";
-import { useProductStore } from "@/store/useProductStore";
+import { Loader2 } from "lucide-react";
 import ProductFilter from "@/components/ProductFilter";
 
 export const dynamic = "force-dynamic";

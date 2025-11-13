@@ -13,7 +13,7 @@ export default function Home() {
     popular,
     newRelease,
     bestSeller,
-    categories,
+    categoryWithProducts: categories,
     loading,
     fetchHomeData,
   } = useHomeStore();
@@ -41,9 +41,9 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <Section title="Popular Products" products={popular} id="popular_products" />
-      <Section title="New Releases" products={newRelease} id="new_release" />
-      <Section title="Best Sellers" products={bestSeller} id="best_seller" />
+      <Section title="Popular Products" products={popular.slice(0,6)} id="popular_products" />
+      <Section title="New Releases" products={newRelease.slice(0,6)} id="new_release" />
+      <Section title="Best Sellers" products={bestSeller.slice(0,6)} id="best_seller" />
       <CategorySection categories={categories} />
     </>
   );

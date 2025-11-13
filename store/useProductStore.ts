@@ -50,11 +50,12 @@ interface ProductStore {
   newRelease: boolean;
   minPrice: string;
   maxPrice: string;
+  search: string
   sort: string;
   limit: number;
 
   // ✅ Actions
-  setFilter: (key: keyof ProductStore, value: any) => void;
+  setFilter: (key: any, value: any) => void;
   resetFilters: () => void;
   fetchProducts: (baseUrl: string, page?: number) => Promise<void>;
   findOne: (baseUrl: string, slug: string) => Promise<void>;
@@ -81,6 +82,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
   newRelease: false,
   minPrice: "",
   maxPrice: "",
+  search: "",
   sort: "newest",
   limit: 25,
 
@@ -95,6 +97,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
       newRelease: false,
       minPrice: "",
       maxPrice: "",
+      search: "",
       sort: "newest",
       currentPage: 1,
     }),
@@ -108,6 +111,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
       newRelease,
       minPrice,
       maxPrice,
+      search,
       sort,
       limit,
     } = get();
@@ -127,6 +131,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
       if (minPrice) params.append("minPrice", minPrice);
       if (maxPrice) params.append("maxPrice", maxPrice);
       if (sort) params.append("sort", sort);
+      if (search) params.append("search", search);
 
       const res = await fetch(`${baseUrl}/product?${params.toString()}`);
       const data = await res.json();
