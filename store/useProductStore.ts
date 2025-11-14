@@ -29,12 +29,22 @@ interface Product {
   newRelease?: boolean;
 }
 
+interface Category {
+  _id: string;
+  name: string;
+}
+
 // ---------- Store ----------
 interface ProductStore {
   // ✅ Single product
   product: Product | null;
   productLoading: boolean;
   productError: string | null;
+
+  // ✅ Catgeories list
+  categories: Category[] | null;
+  categoryLoading: boolean;
+  catgeoryError: string | null;
 
   // ✅ Product list
   products: Product[];
@@ -58,6 +68,7 @@ interface ProductStore {
   setFilter: (key: any, value: any) => void;
   resetFilters: () => void;
   fetchProducts: (baseUrl: string, page?: number) => Promise<void>;
+  fetchCategoriesData: (baseUrl: string) => Promise<void>;
   findOne: (baseUrl: string, slug: string) => Promise<void>;
 }
 
@@ -72,6 +83,10 @@ export const useProductStore = create<ProductStore>((set, get) => ({
   products: [],
   listLoading: false,
   listError: null,
+
+  categoryLoading: false,
+  categories: null,
+  catgeoryError: null,
 
   // --- Pagination + Filters ---
   totalPages: 1,
@@ -174,6 +189,26 @@ export const useProductStore = create<ProductStore>((set, get) => ({
     } catch (err: any) {
       console.error("Error fetching product:", err);
       set({ productError: err.message || "Failed to load product", productLoading: false });
+    }
+  },
+
+  fetchCategoriesData: async (baseUrl: string) => {
+    try {
+      set({ categoryLoading: true, catgeoryError: null });
+
+      const [categories] = await Promise.all([
+        fetch(`${baseUrl}/category/`),
+      ]);
+
+      const categoriesData = await categories.json();
+
+      set({ categories: categoriesData.data || [], categoryLoading: false });
+    } catch (err: any) {
+      console.error("Error fetching home data:", err);
+      set({
+        catgeoryError: err.message || "Failed to load home data",
+        categoryLoading: false,
+      });
     }
   },
 }));
