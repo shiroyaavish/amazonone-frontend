@@ -32,6 +32,27 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
             isLiked ? removeFromWishlist(product._id) : addToWishlist(product._id);
         }
     };
+    const handleShare = async ({ title }: { title: string }) => {
+        const shareData = {
+            title: title,
+            text: "Take a look at this product!",
+            url: window.location.href, // current URL
+        };
+
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+                console.log("Shared successfully!");
+            } catch (error) {
+                console.log("Sharing failed:", error);
+            }
+        } else {
+            // Fallback for unsupported browsers
+            navigator.clipboard.writeText(window.location.href);
+            alert("Link copied to clipboard!");
+        }
+    };
+
 
     const [selectedImage, setSelectedImage] = useState(0);
 
@@ -67,7 +88,7 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
             <div className="max-w-6xl mx-auto px-4 py-4">
                 <button
                     onClick={() => router.back()}
-                    className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900"
+                    className="flex items-center cursor-pointer gap-1 text-sm text-gray-600 hover:text-gray-900"
                 >
                     <ArrowLeft className="w-4 h-4" />
                     Back to Products
@@ -152,7 +173,7 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                                             }`}
                                     />
                                 </button>
-                                <button className="w-9 h-9 border border-gray-200 rounded-lg flex items-center justify-center hover:border-gray-300 transition">
+                                <button className="w-9 h-9 border border-gray-200 rounded-lg flex items-center justify-center hover:border-gray-300 transition" onClick={() => handleShare({ title: product?.title })}>
                                     <Share2 className="w-4 h-4 text-gray-500" />
                                 </button>
                             </div>

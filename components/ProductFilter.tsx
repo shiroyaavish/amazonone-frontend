@@ -406,13 +406,13 @@ export default function ProductFilter() {
         <div className="flex gap-3 mt-3">
           <button
             onClick={applyFilters}
-            className="flex-1 bg-green-600 text-white py-2 rounded-xl"
+            className="flex-1 bg-green-600 text-white py-2 rounded-xl cursor-pointer focus:text-green-600 focus:bg-green-100 focus:border"
           >
             Apply
           </button>
           <button
             onClick={clearFilters}
-            className="px-4 py-2 border rounded-xl text-red-600 bg-red-50"
+            className="px-4 py-2 border rounded-xl cursor-pointer focus:text-red-50 focus:bg-red-500 text-red-600 bg-red-50"
           >
             Clear
           </button>
