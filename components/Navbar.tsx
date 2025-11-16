@@ -96,9 +96,26 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-3 sm:px-6">
           <div className="flex items-center justify-between gap-2 h-16 md:h-20">
 
-            <Link href="/" className="text-2xl font-bold text-green-600">
-              amazone<span className="text-black">one.</span>
+            <Link
+              href="/"
+              className="
+                font-[Poppins] 
+                font-extrabold 
+                text-black 
+                select-none
+                tracking-[0.20em] 
+                text-base        /* Mobile */
+                sm:text-lg       /* Small devices */
+                md:text-xl       /* Tablets */
+                lg:text-2xl      /* Desktop */
+                xl:text-3xl      /* Large screens */
+              "
+            >
+              DEALMITRA
             </Link>
+
+
+
 
             <div className="flex-1 flex justify-center">
               <form className="relative w-full max-w-xl">
