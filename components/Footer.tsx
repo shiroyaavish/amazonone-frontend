@@ -7,15 +7,41 @@ export default function Footer() {
   const { categories } = useHomeStore();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: any) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    setSubmitted(true);
-    setForm({ name: "", email: "", message: "" });
+    setLoading(true);
+
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+
+      const res = await fetch(`${baseUrl}/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Something went wrong!");
+        setLoading(false);
+        return;
+      }
+
+      setSubmitted(true);
+      setForm({ name: "", email: "", message: "" });
+    } catch (error) {
+      console.log(error);
+      alert("Failed to send message. Try again!");
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -57,7 +83,6 @@ export default function Footer() {
             <h4 className="font-semibold text-base mb-4 text-black">Contact Info</h4>
             <p className="text-sm text-gray-600 leading-6 space-y-1">
               <span>dealmitra1111@gmail.com</span><br />
-              {/* <span>+91 98765 43210</span> */}
             </p>
           </div>
 
@@ -78,7 +103,7 @@ export default function Footer() {
                   value={form.name}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-black/20 focus:border-black transition"
+                  className="w-full border border-gray-200 rounded-lg p-2.5 text-sm"
                 />
 
                 <input
@@ -88,7 +113,7 @@ export default function Footer() {
                   value={form.email}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-black/20 focus:border-black transition"
+                  className="w-full border border-gray-200 rounded-lg p-2.5 text-sm"
                 />
 
                 <textarea
@@ -98,14 +123,15 @@ export default function Footer() {
                   onChange={handleChange}
                   rows={3}
                   required
-                  className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-black/20 focus:border-black transition"
+                  className="w-full border border-gray-200 rounded-lg p-2.5 text-sm"
                 ></textarea>
 
                 <button
                   type="submit"
-                  className="w-full bg-black text-white text-sm py-2.5 rounded-lg shadow-sm hover:bg-gray-900 transition"
+                  disabled={loading}
+                  className="w-full bg-black text-white text-sm py-2.5 rounded-lg hover:bg-gray-900 transition"
                 >
-                  Send Message
+                  {loading ? "Sending..." : "Send Message"}
                 </button>
               </form>
             )}
