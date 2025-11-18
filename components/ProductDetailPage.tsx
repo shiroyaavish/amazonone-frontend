@@ -103,7 +103,7 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                             <img
                                 src={product.imageUrls[selectedImage]}
                                 alt={product.title}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-contain"
                             />
                             {discount > 0 && (
                                 <div className="absolute top-3 left-3">
@@ -148,7 +148,7 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                                             : "border-gray-200 hover:border-gray-300"
                                             }`}
                                     >
-                                        <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-cover" />
+                                        <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-contain" />
                                     </button>
                                 ))}
                             </div>
