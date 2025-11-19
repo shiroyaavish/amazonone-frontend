@@ -61,6 +61,10 @@ export default function Footer() {
             <p className="mt-4 text-sm text-gray-500 leading-6 max-w-xs">
               Discover the latest gadgets, best deals, and trending tech.
             </p>
+            <br />
+            <br />
+            <h4 className="font-semibold text-base mb-4 text-black">Pages</h4>
+            <p><Link className="hover:text-black transition" href="/blog">Blogs</Link></p>
           </div>
 
           {/* Column 2 */}

@@ -5,7 +5,7 @@ export interface Blog {
     title: string;
     slug: string;
     description: string;
-    content: string;
+    productIds: any[];
     thumbnail: string;
     category: string;
     tags: string[];
@@ -21,8 +21,8 @@ interface BlogStore {
     blog: Blog | null;
     loading: boolean;
 
-    fetchAllBlogs: () => Promise<void>;
-    fetchBlogBySlug: (slug: string) => Promise<void>;
+    fetchAllBlogs: (baseUrl: string) => Promise<void>;
+    fetchBlogBySlug: (baseUrl: string, slug: string) => Promise<void>;
 }
 
 export const useBlogStore = create<BlogStore>((set) => ({
@@ -31,10 +31,10 @@ export const useBlogStore = create<BlogStore>((set) => ({
     loading: false,
 
     // Fetch all blogs
-    fetchAllBlogs: async () => {
+    fetchAllBlogs: async (baseUrl: string) => {
         try {
             set({ loading: true });
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs`);
+            const res = await fetch(`${baseUrl}/blog`);
             if (!res.ok) {
                 throw new Error(`Failed to fetch blogs: ${res.status} ${res.statusText}`);
             }
@@ -49,13 +49,13 @@ export const useBlogStore = create<BlogStore>((set) => ({
     },
 
     // Fetch single blog by slug
-    fetchBlogBySlug: async (slug: string) => {
+    fetchBlogBySlug: async (baseUrl: string, slug: string) => {
         try {
             set({ loading: true });
             const res = await fetch(
-                `https://nvkmbm4f-4040.inc1.devtunnels.ms/api/blog/${slug}`
+                `${baseUrl}/blog/${slug}`
             );
-            
+
             if (!res.ok) {
                 throw new Error(`Failed to fetch blogs: ${res.status} ${res.statusText}`);
             }
