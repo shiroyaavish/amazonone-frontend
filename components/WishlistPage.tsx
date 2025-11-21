@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useWishlistStore } from "@/store/useWishlistStore";
 
 export default function WishlistPage() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 
   const {
     wishlist,
@@ -25,7 +24,7 @@ export default function WishlistPage() {
     } else {
       console.warn("⚠️ Wishlist empty in Zustand.");
     }
-  }, [baseUrl, wishlist.length, currentPage, products.length]);
+  }, [wishlist.length, currentPage, products.length]);
 
 
   // ✅ Empty Wishlist View

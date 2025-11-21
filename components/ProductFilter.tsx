@@ -13,8 +13,6 @@ import { useProductStore } from "@/store/useProductStore";
 import { useSearchParams } from "next/navigation";
 
 export default function ProductFilter() {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:4040/api";
 
   const searchParams = useSearchParams();
 
@@ -96,8 +94,8 @@ export default function ProductFilter() {
       category: urlCategories,
     });
 
-    fetchProducts(baseUrl, 1);
-    fetchCategoriesData(baseUrl);
+    fetchProducts(1);
+    fetchCategoriesData();
     // eslint-disable-next-line
   }, []);
 
@@ -105,8 +103,8 @@ export default function ProductFilter() {
   const PremiumCheckbox = ({ checked }: { checked: boolean }) => (
     <span
       className={`w-5 h-5 rounded-md border flex items-center justify-center transition ${checked
-          ? "bg-green-600 border-green-600 text-white"
-          : "bg-white border-gray-300"
+        ? "bg-green-600 border-green-600 text-white"
+        : "bg-white border-gray-300"
         }`}
     >
       {checked && (
@@ -177,7 +175,7 @@ export default function ProductFilter() {
       query ? `/product?${query}` : `/product`
     );
 
-    fetchProducts(baseUrl, 1);
+    fetchProducts(1);
     setIsMobileSidebarOpen(false);
   };
 
@@ -195,7 +193,7 @@ export default function ProductFilter() {
     resetFilters();
 
     window.history.replaceState(null, "", `/product`);
-    fetchProducts(baseUrl, 1);
+    fetchProducts(1);
   };
 
   // Sidebar UI
@@ -423,11 +421,11 @@ export default function ProductFilter() {
 
   // Pagination
   const goToPrev = () => {
-    if (currentPage > 1) fetchProducts(baseUrl, currentPage - 1);
+    if (currentPage > 1) fetchProducts(currentPage - 1);
   };
 
   const goToNext = () => {
-    if (currentPage < totalPages) fetchProducts(baseUrl, currentPage + 1);
+    if (currentPage < totalPages) fetchProducts(currentPage + 1);
   };
 
   // MAIN RENDER
@@ -540,8 +538,8 @@ export default function ProductFilter() {
                 disabled={currentPage === 1}
                 onClick={goToPrev}
                 className={`px-5 py-2.5 rounded-lg border font-medium ${currentPage === 1
-                    ? "border-gray-300 text-gray-400 cursor-not-allowed"
-                    : "border-green-600 text-green-600 hover:bg-green-50"
+                  ? "border-gray-300 text-gray-400 cursor-not-allowed"
+                  : "border-green-600 text-green-600 hover:bg-green-50"
                   }`}
               >
                 Previous
@@ -555,8 +553,8 @@ export default function ProductFilter() {
                 disabled={currentPage >= totalPages}
                 onClick={goToNext}
                 className={`px-5 py-2.5 rounded-lg border font-medium ${currentPage >= totalPages
-                    ? "border-gray-300 text-gray-400 cursor-not-allowed"
-                    : "border-green-600 text-green-600 hover:bg-green-50"
+                  ? "border-gray-300 text-gray-400 cursor-not-allowed"
+                  : "border-green-600 text-green-600 hover:bg-green-50"
                   }`}
               >
                 Next

@@ -29,7 +29,6 @@ export default function Navbar() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 
   // Load search term from URL
   useEffect(() => {

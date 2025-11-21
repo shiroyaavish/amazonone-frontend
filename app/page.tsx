@@ -7,7 +7,6 @@ import CategorySection from "@/components/CategorySection";
 import { useHomeStore } from "@/store/useHomeStore";
 
 export default function Home() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 
   const {
     popular,
@@ -25,9 +24,9 @@ export default function Home() {
       bestSeller.length === 0 &&
       categories.length === 0
     ) {
-      fetchHomeData(baseUrl);
+      fetchHomeData();
     }
-  }, [baseUrl, fetchHomeData, popular.length, newRelease.length, bestSeller.length, categories.length]);
+  }, [fetchHomeData, popular.length, newRelease.length, bestSeller.length, categories.length]);
   if (loading)
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -41,9 +40,9 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <Section title="Popular Products" products={popular.slice(0,6)} id="popular_products" />
-      <Section title="New Releases" products={newRelease.slice(0,6)} id="new_release" />
-      <Section title="Best Sellers" products={bestSeller.slice(0,6)} id="best_seller" />
+      <Section title="Popular Products" products={popular.slice(0, 6)} id="popular_products" />
+      <Section title="New Releases" products={newRelease.slice(0, 6)} id="new_release" />
+      <Section title="Best Sellers" products={bestSeller.slice(0, 6)} id="best_seller" />
       <CategorySection categories={categories} />
     </>
   );

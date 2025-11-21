@@ -18,7 +18,6 @@ import AccordionGroup from "./AccordionGroup";
 
 export default function ProductDetailPage({ slug }: { slug: string }) {
     const router = useRouter();
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 
     const { product, productLoading, findOne: fetchProduct } = useProductStore();
 
@@ -57,8 +56,8 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
     const [selectedImage, setSelectedImage] = useState(0);
 
     useEffect(() => {
-        if (slug && baseUrl) fetchProduct(slug);
-    }, [slug, baseUrl, fetchProduct]);
+        if (slug) fetchProduct(slug);
+    }, [slug, fetchProduct]);
 
     if (productLoading)
         return (

@@ -19,14 +19,13 @@ export default function Hero() {
   const router = useRouter();
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [current, setCurrent] = useState<number>(0);
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 
   const { banners, loading, fetchBanners } = useBannerStore();
 
   // ✅ Fetch only once on mount
   useEffect(() => {
-    if (banners.length === 0 && baseUrl) fetchBanners();
-  }, [baseUrl, banners.length, fetchBanners]);
+    if (banners.length === 0) fetchBanners();
+  }, [banners.length, fetchBanners]);
 
   // Auto-slide every 6s
   useEffect(() => {
