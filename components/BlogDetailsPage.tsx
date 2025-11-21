@@ -5,6 +5,7 @@ import { useBlogStore } from "@/store/useBlogStore";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
 import Head from "next/head";
+import ProductCard from "./ProductCard";
 
 export default function BlogDetailsPage({ slug }: { slug: string }) {
 
@@ -88,54 +89,9 @@ export default function BlogDetailsPage({ slug }: { slug: string }) {
                         Recommended Products
                     </h2>
 
-                    <div className="grid md:grid-cols-2 gap-6">
+                    <div className="grid md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-6">
                         {blog.productIds.map((p: any, i: number) => (
-                            <div
-                                key={i}
-                                className="border rounded-xl shadow-sm p-4 hover:shadow-md transition bg-white"
-                            >
-                                <Image
-                                    src={p.imageUrls[0]}
-                                    alt={p.title}
-                                    width={500}
-                                    height={500}
-                                    className="rounded-lg object-contain h-56 w-full bg-gray-50"
-                                />
-
-                                <h3 className="text-lg font-semibold mt-4 line-clamp-2">
-                                    {p.title}
-                                </h3>
-
-                                <div className="text-sm text-gray-500 mt-1">
-                                    ⭐ {p.rating.average} ({p.rating.count})
-                                </div>
-
-                                <div className="mt-2">
-                                    {p.price.current > 0 ? (
-                                        <div className="flex items-baseline gap-2">
-                                            <span className="text-xl font-bold text-green-600">
-                                                ₹{p.price.current.toLocaleString()}
-                                            </span>
-                                            <span className="text-gray-400 line-through">
-                                                ₹{p.price.original.toLocaleString()}
-                                            </span>
-                                            <span className="text-green-600 text-sm">
-                                                ({p.price.discount}% off)
-                                            </span>
-                                        </div>
-                                    ) : (
-                                        <span className="text-gray-600">Price Not Available</span>
-                                    )}
-                                </div>
-
-                                <a
-                                    href={p.affiliateUrl}
-                                    target="_blank"
-                                    className="mt-4 block text-center bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition"
-                                >
-                                    View Product
-                                </a>
-                            </div>
+                            <ProductCard product={p} />
                         ))}
                     </div>
                 </section>
