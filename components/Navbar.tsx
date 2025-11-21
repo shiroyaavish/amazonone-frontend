@@ -79,7 +79,7 @@ export default function Navbar() {
           query ? `/product?${query}` : `/product`
         );
 
-        fetchProducts(baseUrl, 1);
+        fetchProducts(1);
       }
     }
   };

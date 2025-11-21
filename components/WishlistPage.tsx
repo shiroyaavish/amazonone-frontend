@@ -21,11 +21,11 @@ export default function WishlistPage() {
 
   useEffect(() => {
     if (wishlist.length > 0) {
-      fetchWishlistProducts(baseUrl, currentPage);
+      fetchWishlistProducts(currentPage);
     } else {
       console.warn("⚠️ Wishlist empty in Zustand.");
     }
-  }, [baseUrl, wishlist.length, currentPage,products.length]);
+  }, [baseUrl, wishlist.length, currentPage, products.length]);
 
 
   // ✅ Empty Wishlist View
@@ -72,7 +72,7 @@ export default function WishlistPage() {
             <button
               disabled={currentPage === 1}
               onClick={() =>
-                fetchWishlistProducts(baseUrl, currentPage - 1)
+                fetchWishlistProducts(currentPage - 1)
               }
               className={`px-4 py-2 rounded-lg font-medium border ${currentPage === 1
                 ? "text-gray-400 border-gray-200 cursor-not-allowed"
@@ -89,7 +89,7 @@ export default function WishlistPage() {
             <button
               disabled={currentPage === totalPages}
               onClick={() =>
-                fetchWishlistProducts(baseUrl, currentPage + 1)
+                fetchWishlistProducts(currentPage + 1)
               }
               className={`px-4 py-2 rounded-lg font-medium border ${currentPage === totalPages
                 ? "text-gray-400 border-gray-200 cursor-not-allowed"

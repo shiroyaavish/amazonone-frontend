@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { apiHelpers } from "@/lib/axios";
 
 // ---------- Types ----------
 interface Specification {
@@ -36,22 +37,18 @@ interface Category {
 
 // ---------- Store ----------
 interface ProductStore {
-  // ✅ Single product
   product: Product | null;
   productLoading: boolean;
   productError: string | null;
 
-  // ✅ Catgeories list
   categories: Category[] | null;
   categoryLoading: boolean;
   catgeoryError: string | null;
 
-  // ✅ Product list
   products: Product[];
   listLoading: boolean;
   listError: string | null;
 
-  // ✅ Pagination + filters
   totalPages: number;
   currentPage: number;
   category: string[];
@@ -60,35 +57,32 @@ interface ProductStore {
   newRelease: boolean;
   minPrice: string;
   maxPrice: string;
-  search: string
+  search: string;
   sort: string;
   limit: number;
 
-  // ✅ Actions
   setFilter: (key: any, value: any) => void;
   resetFilters: () => void;
-  fetchProducts: (baseUrl: string, page?: number) => Promise<void>;
-  fetchCategoriesData: (baseUrl: string) => Promise<void>;
-  findOne: (baseUrl: string, slug: string) => Promise<void>;
+
+  fetchProducts: (page?: number) => Promise<void>;
+  fetchCategoriesData: () => Promise<void>;
+  findOne: (slug: string) => Promise<void>;
 }
 
 // ---------- Implementation ----------
 export const useProductStore = create<ProductStore>((set, get) => ({
-  // --- Single Product ---
   product: null,
   productLoading: false,
   productError: null,
 
-  // --- Product List ---
   products: [],
   listLoading: false,
   listError: null,
 
-  categoryLoading: false,
   categories: null,
+  categoryLoading: false,
   catgeoryError: null,
 
-  // --- Pagination + Filters ---
   totalPages: 1,
   currentPage: 1,
   category: [],
@@ -101,7 +95,6 @@ export const useProductStore = create<ProductStore>((set, get) => ({
   sort: "newest",
   limit: 25,
 
-  // --- Actions ---
   setFilter: (key, value) => set({ [key]: value }),
 
   resetFilters: () =>
@@ -118,7 +111,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
     }),
 
   // --- Fetch Product List ---
-  fetchProducts: async (baseUrl: string, page = 1) => {
+  fetchProducts: async (page = 1) => {
     const {
       category,
       isPopular,
@@ -134,79 +127,66 @@ export const useProductStore = create<ProductStore>((set, get) => ({
     set({ listLoading: true, listError: null });
 
     try {
-      const params = new URLSearchParams({
-        page: String(page),
-        limit: String(limit),
+      const params: any = {
+        page,
+        limit,
+        sort,
+      };
+
+      if (category.length > 0) params.category = category;
+      if (isPopular) params.isPopular = true;
+      if (bestSeller) params.bestSeller = true;
+      if (newRelease) params.newRelease = true;
+      if (minPrice) params.minPrice = minPrice;
+      if (maxPrice) params.maxPrice = maxPrice;
+      if (search) params.search = search;
+
+      const data = await apiHelpers.get("/product", params);
+
+      set({
+        products: data.data ?? [],
+        totalPages: data.isNextPageAvailble ? page + 1 : page,
+        currentPage: page,
+        listLoading: false,
       });
-
-      if (category.length > 0) category.forEach((id) => params.append("category", id));
-      if (isPopular) params.append("isPopular", "true");
-      if (bestSeller) params.append("bestSeller", "true");
-      if (newRelease) params.append("newRelease", "true");
-      if (minPrice) params.append("minPrice", minPrice);
-      if (maxPrice) params.append("maxPrice", maxPrice);
-      if (sort) params.append("sort", sort);
-      if (search) params.append("search", search);
-
-      const res = await fetch(`${baseUrl}/product?${params.toString()}`);
-      const data = await res.json();
-
-      if (data?.statusCode === 200 && Array.isArray(data.data)) {
-        set({
-          products: data.data,
-          totalPages: data.isNextPageAvailble ? page + 1 : page,
-          currentPage: page,
-          listLoading: false,
-        });
-      } else {
-        set({
-          products: [],
-          totalPages: 1,
-          currentPage: 1,
-          listLoading: false,
-        });
-      }
     } catch (error: any) {
-      console.error("❌ Fetch products error:", error);
-      set({ listLoading: false, listError: error.message || "Failed to fetch products." });
+      set({
+        listLoading: false,
+        listError: error.message || "Failed to fetch products",
+      });
     }
   },
 
-  // --- Fetch Single Product ---
-  findOne: async (baseUrl, slug) => {
+  // --- Single Product ---
+  findOne: async (slug: string) => {
     try {
       set({ productLoading: true, productError: null });
 
-      const res = await fetch(`${baseUrl}/product/${slug}`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await apiHelpers.get(`/product/${slug}`);
 
-      const data = await res.json();
-      if (data.statusCode === 200) {
-        set({ product: data.data, productLoading: false });
-      } else {
-        throw new Error(data.message || "Product not found");
-      }
+      set({ product: data.data, productLoading: false });
     } catch (err: any) {
-      console.error("Error fetching product:", err);
-      set({ productError: err.message || "Failed to load product", productLoading: false });
+      set({
+        productError: err.message || "Failed to load product",
+        productLoading: false,
+      });
     }
   },
 
-  fetchCategoriesData: async (baseUrl: string) => {
+  // --- Fetch Categories ---
+  fetchCategoriesData: async () => {
     try {
       set({ categoryLoading: true, catgeoryError: null });
 
-      const [categories] = await Promise.all([
-        fetch(`${baseUrl}/category/`),
-      ]);
+      const data = await apiHelpers.get("/category");
 
-      const categoriesData = await categories.json();
-
-      set({ categories: categoriesData.data || [], categoryLoading: false });
-    } catch (err: any) {
-      console.error("Error fetching home data:", err);
       set({
-        catgeoryError: err.message || "Failed to load home data",
+        categories: data.data ?? [],
+        categoryLoading: false,
+      });
+    } catch (err: any) {
+      set({
+        catgeoryError: err.message || "Failed to load categories",
         categoryLoading: false,
       });
     }

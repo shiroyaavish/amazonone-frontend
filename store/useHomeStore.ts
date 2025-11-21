@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { apiHelpers } from "@/lib/axios"; // your axios wrapper
 
 interface Product {
   _id: string;
@@ -28,10 +29,10 @@ interface HomeState {
   newRelease: Product[];
   bestSeller: Product[];
   categoryWithProducts: CategoryWithProducts[];
-  categories: Category[]
+  categories: Category[];
   loading: boolean;
   error: string | null;
-  fetchHomeData: (baseUrl: string) => Promise<void>;
+  fetchHomeData: () => Promise<void>;
 }
 
 export const useHomeStore = create<HomeState>((set) => ({
@@ -43,36 +44,56 @@ export const useHomeStore = create<HomeState>((set) => ({
   loading: false,
   error: null,
 
-  fetchHomeData: async (baseUrl: string) => {
+  fetchHomeData: async () => {
     try {
       set({ loading: true, error: null });
 
-      const [popularRes, newRes, bestRes, catRes, categories] = await Promise.all([
-        fetch(`${baseUrl}/product?page=1&limit=10&isPopular=true`),
-        fetch(`${baseUrl}/product?page=1&limit=10&newRelease=true`),
-        fetch(`${baseUrl}/product?page=1&limit=10&bestSeller=true`),
-        fetch(`${baseUrl}/category/products`),
-        fetch(`${baseUrl}/category/`),
+      const popularReq = apiHelpers.get("/product", {
+        page: 1,
+        limit: 10,
+        isPopular: true,
+      });
+
+      const newReq = apiHelpers.get("/product", {
+        page: 1,
+        limit: 10,
+        newRelease: true,
+      });
+
+      const bestReq = apiHelpers.get("/product", {
+        page: 1,
+        limit: 10,
+        bestSeller: true,
+      });
+
+      const catReq = apiHelpers.get("/category/products");
+      const categoriesReq = apiHelpers.get("/category");
+
+      const [
+        popularData,
+        newData,
+        bestData,
+        catData,
+        categoriesData,
+      ] = await Promise.all([
+        popularReq,
+        newReq,
+        bestReq,
+        catReq,
+        categoriesReq,
       ]);
 
-      const popularData = await popularRes.json();
-      const newData = await newRes.json();
-      const bestData = await bestRes.json();
-      const catData = await catRes.json();
-      const categoriesData = await categories.json();
-
       set({
-        popular: popularData.data || [],
-        newRelease: newData.data || [],
-        bestSeller: bestData.data || [],
-        categoryWithProducts: catData.data || [],
-        categories: categoriesData.data || [],
+        popular: popularData.data ?? [],
+        newRelease: newData.data ?? [],
+        bestSeller: bestData.data ?? [],
+        categoryWithProducts: catData.data ?? [],
+        categories: categoriesData.data ?? [],
         loading: false,
       });
     } catch (err: any) {
-      console.error("Error fetching home data:", err);
       set({
-        error: err.message || "Failed to load home data",
+        error: err?.message || "Failed to load home data",
         loading: false,
       });
     }

@@ -8,11 +8,10 @@ import Head from "next/head";
 
 export default function BlogDetailsPage({ slug }: { slug: string }) {
 
-    const { blog, fetchBlogBySlug, loading } = useBlogStore();
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+    const { blog, fetchBlogBySlug, loading, error } = useBlogStore();
 
     useEffect(() => {
-        if (slug) fetchBlogBySlug(baseUrl, slug);
+        if (slug) fetchBlogBySlug(slug);
     }, [slug]);
 
     if (loading || !blog)
@@ -21,18 +20,26 @@ export default function BlogDetailsPage({ slug }: { slug: string }) {
                 <Loader2 className="animate-spin w-8 h-8 text-gray-600" />
             </div>
         );
+    if (error || !blog) {
+        return (
+            <div className="max-w-3xl mx-auto px-4 py-20 text-center">
+                <h2 className="text-2xl font-semibold text-gray-800">Blog Not Found</h2>
+                <p className="text-gray-600 mt-2">The blog you are looking for does not exist or has been removed.</p>
+            </div>
+        );
+    }
 
     return (
         <main className="max-w-5xl mx-auto px-4 py-10">
             {/* SEO Meta */}
-            <Head>
+            {/* <Head>
                 <title>{blog.metaTitle || blog.title}</title>
                 <meta name="description" content={blog.metaDescription || blog.description} />
                 <meta name="keywords" content={blog.keywords?.join(", ")} />
                 <meta property="og:title" content={blog.metaTitle} />
                 <meta property="og:description" content={blog.metaDescription} />
                 <meta property="og:image" content={blog.thumbnail} />
-            </Head>
+            </Head> */}
 
             {/* Title */}
             <h1 className="text-4xl font-bold text-gray-900 leading-snug">

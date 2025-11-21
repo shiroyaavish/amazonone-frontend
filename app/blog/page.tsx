@@ -9,10 +9,9 @@ import { Loader2 } from "lucide-react";
 
 export default function BlogsPage() {
     const { blogs, fetchAllBlogs, loading } = useBlogStore();
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 
     useEffect(() => {
-        fetchAllBlogs(baseUrl);
+        fetchAllBlogs();
     }, []);
 
     return (

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { apiHelpers } from "@/lib/axios";
 
 interface Product {
   _id: string;
@@ -23,7 +24,7 @@ interface WishlistState {
   removeFromWishlist: (id: string) => void;
   toggleWishlist: (id: string) => void;
   isInWishlist: (id: string) => boolean;
-  fetchWishlistProducts: (baseUrl: string, page?: number) => Promise<void>;
+  fetchWishlistProducts: (page?: number) => Promise<void>;
 }
 
 const PAGE_SIZE = 25;
@@ -40,30 +41,31 @@ export const useWishlistStore = create<WishlistState>()(
       addToWishlist: (id) =>
         set((state) => {
           if (state.wishlist.includes(id)) return state;
-          const updated = [...state.wishlist, id];
-          return { wishlist: updated };
+          return { wishlist: [...state.wishlist, id] };
         }),
 
       removeFromWishlist: (id) =>
         set((state) => {
-          const updated = state.wishlist.filter((x) => x !== id);
-          const products = state.products.filter((x) => x._id !== id);
-          return { ...state, wishlist: updated, products };
+          return {
+            wishlist: state.wishlist.filter((x) => x !== id),
+            products: state.products.filter((x) => x._id !== id),
+          };
         }),
 
       toggleWishlist: (id) =>
-        set((state) => {
-          const updated = state.wishlist.includes(id)
+        set((state) => ({
+          wishlist: state.wishlist.includes(id)
             ? state.wishlist.filter((x) => x !== id)
-            : [...state.wishlist, id];
-          return { wishlist: updated };
-        }),
+            : [...state.wishlist, id],
+        })),
 
       isInWishlist: (id) => get().wishlist.includes(id),
 
-      fetchWishlistProducts: async (baseUrl: string, page = 1) => {
+      // ✅ Axios version
+      fetchWishlistProducts: async (page = 1) => {
         const { wishlist } = get();
-        if (!wishlist || wishlist.length === 0) {
+
+        if (!wishlist.length) {
           set({ products: [], totalPages: 0 });
           return;
         }
@@ -76,15 +78,11 @@ export const useWishlistStore = create<WishlistState>()(
         set({ loading: true });
 
         try {
-          const res = await fetch(`${baseUrl}/product/wishlist`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ productId: currentIds }),
+          const data = await apiHelpers.post("/product/wishlist", {
+            productId: currentIds,
           });
 
-          const data = await res.json();
-
-          if (data?.statusCode === 200 && Array.isArray(data.data)) {
+          if (Array.isArray(data.data)) {
             set({
               products: data.data,
               totalPages,
@@ -99,8 +97,6 @@ export const useWishlistStore = create<WishlistState>()(
         }
       },
     }),
-    {
-      name: "wishlist",
-    }
+    { name: "wishlist" }
   )
 );

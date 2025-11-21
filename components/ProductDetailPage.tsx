@@ -57,7 +57,7 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
     const [selectedImage, setSelectedImage] = useState(0);
 
     useEffect(() => {
-        if (slug && baseUrl) fetchProduct(baseUrl, slug);
+        if (slug && baseUrl) fetchProduct(slug);
     }, [slug, baseUrl, fetchProduct]);
 
     if (productLoading)

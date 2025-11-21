@@ -1,0 +1,152 @@
+// lib/axios.ts (Advanced Version)
+import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from "axios";
+
+// Types
+interface ApiError {
+    message: string;
+    status: number;
+    data?: unknown;
+}
+
+interface RetryConfig extends InternalAxiosRequestConfig {
+    url: any;
+    headers: any;
+    _retry?: boolean;
+}
+
+// Create axios instance
+const api = axios.create({
+    baseURL: process.env.NEXT_PUBLIC_BASE_URL || "",
+    timeout: 15000,
+    headers: {
+        "Content-Type": "application/json",
+    },
+});
+
+// Helper: Get auth token
+const getToken = (): string | null => {
+    if (typeof window !== "undefined") {
+        return localStorage.getItem("token");
+    }
+    return null;
+};
+
+// Helper: Remove auth token
+const removeToken = (): void => {
+    if (typeof window !== "undefined") {
+        localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
+    }
+};
+
+// Helper: Refresh token (customize based on your API)
+const refreshAuthToken = async (): Promise<string | null> => {
+    try {
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (!refreshToken) return null;
+
+        const { data } = await axios.post(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/refresh`,
+            { refreshToken }
+        );
+
+        localStorage.setItem("token", data.accessToken);
+        return data.accessToken;
+    } catch {
+        removeToken();
+        return null;
+    }
+};
+
+// Request Interceptor
+api.interceptors.request.use(
+    (config: InternalAxiosRequestConfig) => {
+        const token = getToken();
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+
+        // Add timestamp to prevent caching (optional)
+        if (config.method === "get") {
+            config.params = {
+                ...config.params,
+                _t: Date.now(),
+            };
+        }
+
+        // Log in development
+        if (process.env.NODE_ENV === "development") {
+            console.log(`🚀 [${config.method?.toUpperCase()}] ${config.url}`, {
+                params: config.params,
+                data: config.data,
+            });
+        }
+
+        return config;
+    },
+    (error: AxiosError) => {
+        return Promise.reject(error);
+    }
+);
+
+// Response Interceptor
+api.interceptors.response.use(
+    (response: AxiosResponse) => {
+        if (process.env.NODE_ENV === "development") {
+            console.log(`✅ [${response.status}] ${response.config.url}`);
+        }
+        return response;
+    },
+    async (error: AxiosError<ApiError>) => {
+        const originalRequest = error.config as RetryConfig;
+
+        // Handle 401 with token refresh
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+
+            const newToken = await refreshAuthToken();
+            if (newToken) {
+                originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                return api(originalRequest);
+            }
+
+            // Redirect to login if refresh fails
+            if (typeof window !== "undefined") {
+                window.location.href = "/login";
+            }
+        }
+
+        // Handle other errors
+        const apiError: ApiError = {
+            message: error.response?.data?.message || error.message || "An error occurred",
+            status: error.response?.status || 500,
+            data: error.response?.data,
+        };
+
+        if (process.env.NODE_ENV === "development") {
+            console.error(`❌ [${apiError.status}] ${originalRequest?.url}`, apiError);
+        }
+
+        return Promise.reject(apiError);
+    }
+);
+
+// API Helper Methods
+export const apiHelpers = {
+    get: <T>(url: string, params?: object) =>
+        api.get<T>(url, { params }).then((res: { data: any; }) => res.data),
+
+    post: <T>(url: string, data?: object) =>
+        api.post<T>(url, data).then((res: { data: any; }) => res.data),
+
+    put: <T>(url: string, data?: object) =>
+        api.put<T>(url, data).then((res: { data: any; }) => res.data),
+
+    patch: <T>(url: string, data?: object) =>
+        api.patch<T>(url, data).then((res: { data: any; }) => res.data),
+
+    delete: <T>(url: string) =>
+        api.delete<T>(url).then((res: { data: any; }) => res.data),
+};
+
+export default api;

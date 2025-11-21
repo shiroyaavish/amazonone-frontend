@@ -1,4 +1,6 @@
+// store/useBlogStore.ts
 import { create } from "zustand";
+import api from "@/lib/axios";
 
 export interface Blog {
     _id: string;
@@ -20,51 +22,54 @@ interface BlogStore {
     blogs: Blog[];
     blog: Blog | null;
     loading: boolean;
+    error: string | null;
 
-    fetchAllBlogs: (baseUrl: string) => Promise<void>;
-    fetchBlogBySlug: (baseUrl: string, slug: string) => Promise<void>;
+    fetchAllBlogs: () => Promise<void>;
+    fetchBlogBySlug: (slug: string) => Promise<void>;
+    clearBlog: () => void;
+    clearError: () => void;
 }
 
 export const useBlogStore = create<BlogStore>((set) => ({
     blogs: [],
     blog: null,
     loading: false,
+    error: null,
 
     // Fetch all blogs
-    fetchAllBlogs: async (baseUrl: string) => {
+    fetchAllBlogs: async () => {
         try {
-            set({ loading: true });
-            const res = await fetch(`${baseUrl}/blog`);
-            if (!res.ok) {
-                throw new Error(`Failed to fetch blogs: ${res.status} ${res.statusText}`);
-            }
-            const data = await res.json();
-            // If API returns the array directly use data, otherwise use data.blogs
-            const blogs = Array.isArray(data) ? (data as Blog[]) : (data.blogs as Blog[]);
+            set({ loading: true, error: null });
+            const { data } = await api.get("/blog");
+            const blogs = Array.isArray(data) ? data : data.blogs;
             set({ blogs, loading: false });
-        } catch (err) {
-            console.log("Error fetching blogs:", err);
-            set({ loading: false });
+        } catch (err: any) {
+            console.error("Error fetching blogs:", err);
+            set({
+                loading: false,
+                error: err.message || "Failed to fetch blogs"
+            });
         }
     },
 
     // Fetch single blog by slug
-    fetchBlogBySlug: async (baseUrl: string, slug: string) => {
+    fetchBlogBySlug: async (slug: string) => {
         try {
-            set({ loading: true });
-            const res = await fetch(
-                `${baseUrl}/blog/${slug}`
-            );
-
-            if (!res.ok) {
-                throw new Error(`Failed to fetch blogs: ${res.status} ${res.statusText}`);
-            }
-            const data = await res.json();
-            console.log(data);
+            set({ loading: true, error: null });
+            const { data } = await api.get(`/blog/${slug}`);
             set({ blog: data.blog, loading: false });
-        } catch (err) {
-            console.log("Error fetching blog:", err);
-            set({ loading: false });
+        } catch (err: any) {
+            console.error("Error fetching blog:", err);
+            set({
+                loading: false,
+                error: err.message || "Failed to fetch blog"
+            });
         }
     },
+
+    // Clear single blog (useful when navigating away)
+    clearBlog: () => set({ blog: null }),
+
+    // Clear error
+    clearError: () => set({ error: null }),
 }));

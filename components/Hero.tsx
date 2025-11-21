@@ -25,7 +25,7 @@ export default function Hero() {
 
   // ✅ Fetch only once on mount
   useEffect(() => {
-    if (banners.length === 0 && baseUrl) fetchBanners(baseUrl);
+    if (banners.length === 0 && baseUrl) fetchBanners();
   }, [baseUrl, banners.length, fetchBanners]);
 
   // Auto-slide every 6s
