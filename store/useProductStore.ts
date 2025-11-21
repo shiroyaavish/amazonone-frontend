@@ -28,6 +28,7 @@ interface Product {
   isPopular?: boolean;
   bestSeller?: boolean;
   newRelease?: boolean;
+  availability: boolean;
 }
 
 interface Category {
@@ -140,8 +141,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
       if (minPrice) params.minPrice = minPrice;
       if (maxPrice) params.maxPrice = maxPrice;
       if (search) params.search = search;
-
-      const data = await apiHelpers.get("/product", params);
+      const data: any = await apiHelpers.get("/product", params);
 
       set({
         products: data.data ?? [],
@@ -162,7 +162,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
     try {
       set({ productLoading: true, productError: null });
 
-      const data = await apiHelpers.get(`/product/${slug}`);
+      const data: any = await apiHelpers.get(`/product/${slug}`);
 
       set({ product: data.data, productLoading: false });
     } catch (err: any) {
@@ -178,7 +178,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
     try {
       set({ categoryLoading: true, catgeoryError: null });
 
-      const data = await apiHelpers.get("/category");
+      const data: any = await apiHelpers.get("/category");
 
       set({
         categories: data.data ?? [],

@@ -12,6 +12,7 @@ interface Product {
     current: number;
     original: number;
   };
+  availability: boolean;
 }
 
 interface WishlistState {
@@ -78,7 +79,7 @@ export const useWishlistStore = create<WishlistState>()(
         set({ loading: true });
 
         try {
-          const data = await apiHelpers.post("/product/wishlist", {
+          const data: any = await apiHelpers.post("/product/wishlist", {
             productId: currentIds,
           });
 

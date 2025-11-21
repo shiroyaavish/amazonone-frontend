@@ -104,10 +104,17 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                                 alt={product.title}
                                 className="w-full h-full object-contain"
                             />
-                            {discount > 0 && (
+                            {discount > 0 && product.availability && (
                                 <div className="absolute top-3 left-3">
                                     <span className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
-                                        {discount}% OFF
+                                        {product.availability ? `${discount} % OFF` : "Unavailable"}
+                                    </span>
+                                </div>
+                            )}
+                            {!product.availability && (
+                                <div className="absolute top-3 left-3">
+                                    <span className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
+                                        Unavailable
                                     </span>
                                 </div>
                             )}
@@ -200,21 +207,27 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                         </div>
 
                         {/* 💰 Pricing */}
-                        <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                            <div className="flex items-center gap-3 flex-wrap mb-1">
-                                <span className="text-3xl font-bold text-gray-900">
-                                    ₹{product.price.current.toLocaleString()}
-                                </span>
-                                <span className="text-lg text-gray-400 line-through">
-                                    ₹{product.price.original.toLocaleString()}
-                                </span>
-                                <span className="text-sm font-medium text-green-600">
-                                    Save ₹{(product.price.original - product.price.current).toLocaleString()}
-                                </span>
+                        {product.availability ?
+                            <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                                <div className="flex items-center gap-3 flex-wrap mb-1">
+                                    <span className="text-3xl font-bold text-gray-900">
+                                        ₹{product.price.current.toLocaleString()}
+                                    </span>
+                                    <span className="text-lg text-gray-400 line-through">
+                                        ₹{product.price.original.toLocaleString()}
+                                    </span>
+                                    <span className="text-sm font-medium text-green-600">
+                                        Save ₹{(product.price.original - product.price.current).toLocaleString()}
+                                    </span>
+                                </div>
+                                <p className="text-xs text-gray-500">Inclusive of all taxes</p>
                             </div>
-                            <p className="text-xs text-gray-500">Inclusive of all taxes</p>
-                        </div>
-
+                            :
+                            <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                                
+                                <p className="text-xs text-red-500">Product is not available.</p>
+                            </div>
+                        }
                         {/* ✨ Features */}
                         <div>
                             <h2 className="text-sm font-semibold text-gray-900 mb-3">Key Features</h2>

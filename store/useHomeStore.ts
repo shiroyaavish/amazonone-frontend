@@ -11,6 +11,7 @@ interface Product {
     current: number;
     original: number;
   };
+  availability: boolean;
 }
 
 interface CategoryWithProducts {
@@ -75,7 +76,7 @@ export const useHomeStore = create<HomeState>((set) => ({
         bestData,
         catData,
         categoriesData,
-      ] = await Promise.all([
+      ]: any[] = await Promise.all([
         popularReq,
         newReq,
         bestReq,

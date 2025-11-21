@@ -27,8 +27,7 @@ export const useBannerStore = create<BannerState>((set) => ({
     try {
       set({ loading: true, error: null });
 
-      // Axios (with interceptors)
-      const data = await apiHelpers.get("/banner/active/data");
+      const data: any = await apiHelpers.get("/banner/active/data");
 
       const bannerList = Array.isArray(data)
         ? data

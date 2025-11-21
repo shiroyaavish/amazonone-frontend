@@ -10,6 +10,7 @@ interface Product {
     current: number;
     original: number;
   };
+  availability: boolean;
 }
 
 interface Category {
@@ -24,7 +25,7 @@ export default function CategorySection({ categories = [] }: { categories?: Cate
     <section className="mt-12">
       {categories.map((cat) => (
         <div key={cat._id} className="mb-10">
-          <Section title={cat.name} products={cat.products.slice(0,6)} id={cat._id} />
+          <Section title={cat.name} products={cat.products.slice(0, 6)} id={cat._id} />
         </div>
       ))}
     </section>

@@ -1,5 +1,6 @@
 // lib/axios.ts (Advanced Version)
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from "axios";
+import qs from "qs";  // <-- add this
 
 // Types
 interface ApiError {
@@ -21,6 +22,13 @@ const api = axios.create({
     headers: {
         "Content-Type": "application/json",
     },
+
+    // 🔥 FIX: Serialize arrays as repeated params
+    // category=['a','b'] => category=a&category=b
+    paramsSerializer: {
+        serialize: (params) =>
+            qs.stringify(params, { arrayFormat: "repeat" }),
+    },
 });
 
 // Helper: Get auth token
@@ -39,7 +47,7 @@ const removeToken = (): void => {
     }
 };
 
-// Helper: Refresh token (customize based on your API)
+// Helper: Refresh token
 const refreshAuthToken = async (): Promise<string | null> => {
     try {
         const refreshToken = localStorage.getItem("refreshToken");
@@ -66,7 +74,7 @@ api.interceptors.request.use(
             config.headers.Authorization = `Bearer ${token}`;
         }
 
-        // Add timestamp to prevent caching (optional)
+        // Prevent GET caching
         if (config.method === "get") {
             config.params = {
                 ...config.params,
@@ -74,7 +82,6 @@ api.interceptors.request.use(
             };
         }
 
-        // Log in development
         if (process.env.NODE_ENV === "development") {
             console.log(`🚀 [${config.method?.toUpperCase()}] ${config.url}`, {
                 params: config.params,
@@ -84,9 +91,7 @@ api.interceptors.request.use(
 
         return config;
     },
-    (error: AxiosError) => {
-        return Promise.reject(error);
-    }
+    (error: AxiosError) => Promise.reject(error)
 );
 
 // Response Interceptor
@@ -100,7 +105,7 @@ api.interceptors.response.use(
     async (error: AxiosError<ApiError>) => {
         const originalRequest = error.config as RetryConfig;
 
-        // Handle 401 with token refresh
+        // Handle 401 refresh
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
 
@@ -110,13 +115,11 @@ api.interceptors.response.use(
                 return api(originalRequest);
             }
 
-            // Redirect to login if refresh fails
             if (typeof window !== "undefined") {
                 window.location.href = "/login";
             }
         }
 
-        // Handle other errors
         const apiError: ApiError = {
             message: error.response?.data?.message || error.message || "An error occurred",
             status: error.response?.status || 500,
@@ -134,19 +137,19 @@ api.interceptors.response.use(
 // API Helper Methods
 export const apiHelpers = {
     get: <T>(url: string, params?: object) =>
-        api.get<T>(url, { params }).then((res: { data: any; }) => res.data),
+        api.get<T>(url, { params }).then((res) => res.data),
 
     post: <T>(url: string, data?: object) =>
-        api.post<T>(url, data).then((res: { data: any; }) => res.data),
+        api.post<T>(url, data).then((res) => res.data),
 
     put: <T>(url: string, data?: object) =>
-        api.put<T>(url, data).then((res: { data: any; }) => res.data),
+        api.put<T>(url, data).then((res) => res.data),
 
     patch: <T>(url: string, data?: object) =>
-        api.patch<T>(url, data).then((res: { data: any; }) => res.data),
+        api.patch<T>(url, data).then((res) => res.data),
 
     delete: <T>(url: string) =>
-        api.delete<T>(url).then((res: { data: any; }) => res.data),
+        api.delete<T>(url).then((res) => res.data),
 };
 
 export default api;

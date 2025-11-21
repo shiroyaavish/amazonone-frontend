@@ -12,6 +12,7 @@ interface Product {
     current: number;
     original: number;
   };
+  availability: boolean;
 }
 
 interface SectionProps {

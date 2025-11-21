@@ -8,7 +8,7 @@ type Props = {
 async function getBlog(slug: string) {
   try {
     // console.log("Fetching blog for slug:", slug);
-    const data = await apiHelpers.get(`blog/${slug}`);
+    const data: any = await apiHelpers.get(`blog/${slug}`);
     // console.log("Blog data:", data);
     if (!data) return null;
 

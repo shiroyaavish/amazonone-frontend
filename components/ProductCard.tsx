@@ -12,6 +12,7 @@ interface Product {
     isPopular?: boolean;
     bestSeller?: boolean;
     newRelease?: boolean;
+    availability: boolean;
 }
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -83,17 +84,22 @@ export default function ProductCard({ product }: { product: Product }) {
                         <span className="text-[10px] text-gray-500 ml-0.5">(4.0)</span>
                     </div>
                     <div className="flex items-center gap-1.5">
-                        <span className="text-sm font-bold text-gray-900">₹{product.price?.current}</span>
-                        {product.price?.original && (
-                            <span className="text-[10px] text-gray-400 line-through">
-                                ₹{product.price.original}
-                            </span>
-                        )}
-                        {product.price?.discount != null && (
-                            <span className="text-[10px] font-medium text-red-600 bg-red-50 rounded-full px-1.5 py-0.5">
-                                {product.price.discount}% off
-                            </span>
-                        )}
+                        {product.availability ?
+                            <> <span className="text-sm font-bold text-gray-900">₹{product.price?.current}</span>
+                                {product.price?.original && (
+                                    <span className="text-[10px] text-gray-400 line-through">
+                                        ₹{product.price.original}
+                                    </span>
+                                )}
+                                {product.price?.discount != null && (
+                                    <span className="text-[10px] font-medium text-red-600 bg-red-50 rounded-full px-1.5 py-0.5">
+                                        {product.price.discount}% off
+                                    </span>
+                                )}
+                            </>
+                            :
+                            <span className="text-sm font-bold text-gray-900">Unavailable</span>
+                        }
                     </div>
                 </div>
             </a>
