@@ -1,10 +1,10 @@
 "use client";
 import { useHomeStore } from "@/store/useHomeStore";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Footer() {
-  const { categories } = useHomeStore();
+  const { categories, fetchCategoriesData } = useHomeStore();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -43,6 +43,9 @@ export default function Footer() {
 
     setLoading(false);
   };
+  useEffect(() => {
+    fetchCategoriesData()
+  }, [categories.length, fetchCategoriesData])
 
   return (
     <footer className="bg-white border-t mt-20">

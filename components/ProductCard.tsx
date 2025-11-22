@@ -1,6 +1,9 @@
+"use client"
 import Link from "next/link";
 import { Heart, Star } from "lucide-react";
 import { useWishlistStore } from "@/store/useWishlistStore";
+import { useProductStore } from "@/store/useProductStore";
+// import { useRouter } from "next/router";
 
 interface Product {
     _id: string;
@@ -16,7 +19,9 @@ interface Product {
 }
 
 export default function ProductCard({ product }: { product: Product }) {
+    // const router = useRouter()
     const { wishlist, addToWishlist, removeFromWishlist } = useWishlistStore();
+    const { productVisit } = useProductStore()
     const isLiked = wishlist.includes(product._id);
 
     const handleToggle = (e: React.MouseEvent) => {
@@ -28,9 +33,14 @@ export default function ProductCard({ product }: { product: Product }) {
         ((product.price.original - product.price.current) / product.price.original) * 100
     );
 
+    const onClickhandle = async (id: string) => {
+        await productVisit(id)
+        // router.push(`/product/${slug}`)
+    }
+
     return (
         <div className="group bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-green-200 transition-all duration-300 hover:shadow-lg">
-            <a href={`/product/${product.slug}`}>
+            <Link href={`/product/${product.slug}`} onClick={() => onClickhandle(product._id)}>
                 <div className="relative aspect-square overflow-hidden bg-gray-50">
                     <img
                         src={product.imageUrls?.[0]}
@@ -102,7 +112,7 @@ export default function ProductCard({ product }: { product: Product }) {
                         }
                     </div>
                 </div>
-            </a>
+            </Link>
         </div>
     );
 }

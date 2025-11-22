@@ -22,7 +22,7 @@ export default function WishlistPage() {
     if (wishlist.length > 0) {
       fetchWishlistProducts(currentPage);
     } else {
-      console.warn("⚠️ Wishlist empty in Zustand.");
+      console.warn("⚠️ Wishlist empty.");
     }
   }, [wishlist.length, currentPage, products.length]);
 

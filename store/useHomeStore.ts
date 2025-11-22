@@ -34,6 +34,7 @@ interface HomeState {
   loading: boolean;
   error: string | null;
   fetchHomeData: () => Promise<void>;
+  fetchCategoriesData: () => Promise<void>;
 }
 
 export const useHomeStore = create<HomeState>((set) => ({
@@ -99,4 +100,19 @@ export const useHomeStore = create<HomeState>((set) => ({
       });
     }
   },
+  fetchCategoriesData: async () => {
+    try {
+      set({ loading: true, error: null })
+      const categoriesReq: any = await apiHelpers.get("/category");
+      set({
+        categories: categoriesReq.data ?? [],
+        loading: false,
+      });
+    } catch (error: any) {
+      set({
+        error: error?.message || "Failed to load category data",
+        loading: false,
+      });
+    }
+  }
 }));

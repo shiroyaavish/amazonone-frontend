@@ -68,6 +68,7 @@ interface ProductStore {
   fetchProducts: (page?: number) => Promise<void>;
   fetchCategoriesData: () => Promise<void>;
   findOne: (slug: string) => Promise<void>;
+  productVisit: (id: string) => Promise<void>;
 }
 
 // ---------- Implementation ----------
@@ -191,4 +192,11 @@ export const useProductStore = create<ProductStore>((set, get) => ({
       });
     }
   },
+  productVisit: async (id) => {
+    try {
+      await apiHelpers.get(`/product/${id}/visit`)
+    } catch (error) {
+      console.error(error)
+    }
+  }
 }));
