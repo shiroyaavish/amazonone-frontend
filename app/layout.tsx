@@ -5,8 +5,8 @@ import { ReactNode, Suspense } from "react";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Deal Mitra - Best Affiliate Product Deals",
-  description: "Shop affiliate products at the best prices.",
+  title: "Deal Mitra - Best Product, Best Deals",
+  description: "Shop products at the best prices.",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.png",
