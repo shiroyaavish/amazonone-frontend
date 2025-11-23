@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProductPage({ params }: Props) {
   // ✅ Unwrap the Promise
   const { slug } = await params;
-  await getProduct(slug)
+  // await getProduct(slug)
 
   // ✅ Pass it down to your client component
   return <ProductDetailPage slug={slug} />;

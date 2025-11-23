@@ -25,18 +25,18 @@ export default function Section({ title, products = [], id = null }: SectionProp
   if (!products?.length) return null;
 
   const handleViewBestSellers = () => {
-    return `/product?bestSeller=true`
+    return `/bestseller?bestSeller=true`
   };
   const handleViewNewReleases = () => {
-    return `/product?newRelease=true`;
+    return `/newrelease?newRelease=true`;
   };
 
   const handleViewPopular = () => {
-    return `/product?isPopular=true`
+    return `/popular?isPopular=true`
   };
 
-  const handleViewCategory = (categoryId: string) => {
-    return `/product?category=${categoryId}`
+  const handleViewCategory = (name: string, categoryId: string) => {
+    return `/category/${name.replaceAll(" ", "-")}?category=${categoryId}`
   };
   const handleView = () => {
     if (id === "best_seller") {
@@ -46,7 +46,7 @@ export default function Section({ title, products = [], id = null }: SectionProp
     } else if (id === "popular_products") {
       return handleViewPopular();
     } else {
-      return handleViewCategory(id!);
+      return handleViewCategory(title, id);
     }
   };
   return (
