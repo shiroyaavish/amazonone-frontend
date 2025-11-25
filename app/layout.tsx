@@ -63,7 +63,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <Suspense fallback={<p>Loading...</p>}>
           <Navbar />
         </Suspense>
-        <main className="max-w-7xl mx-auto px-2">{children}</main>
+        <main className="mx-auto px-2">{children}</main>
         <Footer />
       </body>
     </html>

@@ -1,147 +1,356 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Search, Heart } from "lucide-react";
+import {
+  Search,
+  Heart,
+  Camera,
+  GitCompareArrows,
+  Layers3,
+  ChevronDown,
+  Menu,
+  X
+} from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useWishlistStore } from "@/store/useWishlistStore";
-import { useProductStore } from "@/store/useProductStore";
+import { useHomeStore } from "@/store/useHomeStore";
 
 export default function Navbar() {
   const [isVisible, setIsVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const {
-    isPopular,
-    bestSeller,
-    newRelease,
-    minPrice,
-    maxPrice,
-    sort,
-    category,
-    search,
-    setFilter,
-    fetchProducts
-  } = useProductStore()
 
-  const lastScrollY = useRef(0);
+  // mobile states
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [accOpenProducts, setAccOpenProducts] = useState(false);
+  const [accOpenCategories, setAccOpenCategories] = useState(false);
+  const [accOpenTools, setAccOpenTools] = useState(false);
+
+  const { categories, fetchCategoriesData } = useHomeStore();
   const wishlist = useWishlistStore((s) => s.wishlist);
+
   const router = useRouter();
   const searchParams = useSearchParams();
-  const pathname = usePathname();
+  const lastScrollY = useRef(0);
 
-  // Load search term from URL
+  useEffect(() => {
+    if (!categories.length) fetchCategoriesData();
+  }, [categories.length, fetchCategoriesData]);
+
   useEffect(() => {
     setSearchQuery(searchParams.get("search") || "");
   }, [searchParams]);
 
-  // Scroll Hide Nav Logic (Optimized)
   useEffect(() => {
-    const handleScroll = () => {
-      const current = window.scrollY;
-
-      setIsScrolled(current > 20);
-      setIsVisible(current < lastScrollY.current || current < 100);
-
-      lastScrollY.current = current;
+    const onScroll = () => {
+      const cur = window.scrollY;
+      setIsScrolled(cur > 20);
+      setIsVisible(cur < lastScrollY.current || cur < 120);
+      lastScrollY.current = cur;
     };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleSearchKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      e.preventDefault();
       const params = new URLSearchParams(searchParams.toString());
-
-      if (searchQuery.trim()) {
-        params.set("search", searchQuery.trim());
-      } else {
-        params.delete("search");
-      }
-      if (pathname !== "/product") {
-        router.push(`/product?${params.toString()}`);
-      } else {
-        setFilter("search", searchQuery.trim());
-        if (isPopular) params.set("isPopular", "true");
-        if (bestSeller) params.set("bestSeller", "true");
-        if (newRelease) params.set("newRelease", "true");
-        if (minPrice) params.set("minPrice", minPrice);
-        if (maxPrice) params.set("maxPrice", maxPrice);
-        if (category.length)
-          params.set("category", category.join(","));
-        const query = params.toString();
-        window.history.replaceState(
-          null,
-          "",
-          query ? `/product?${query}` : `/product`
-        );
-
-        fetchProducts(1);
-      }
+      if (searchQuery.trim()) params.set("search", searchQuery.trim());
+      else params.delete("search");
+      router.push(`/product?${params.toString()}`);
+      setMobileOpen(false);
     }
   };
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMobileOpen(false);
+        setAccOpenProducts(false);
+        setAccOpenCategories(false);
+        setAccOpenTools(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  // 🔥 CLOSE OTHER ACCORDIONS
+  const toggleProducts = () => {
+    setAccOpenProducts(!accOpenProducts);
+    setAccOpenCategories(false);
+    setAccOpenTools(false);
+  };
+  const toggleCategories = () => {
+    setAccOpenCategories(!accOpenCategories);
+    setAccOpenProducts(false);
+    setAccOpenTools(false);
+  };
+  const toggleTools = () => {
+    setAccOpenTools(!accOpenTools);
+    setAccOpenProducts(false);
+    setAccOpenCategories(false);
+  };
 
   return (
     <>
+      {/* NAVBAR WRAPPER */}
       <header
-        className={`fixed top-0 left-0 w-full z-50 transform transition-all duration-300 
-        ${isVisible ? "translate-y-0" : "-translate-y-full"}
-        ${isScrolled ? "bg-white/80 backdrop-blur-xl shadow-md" : "bg-white"}
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300
+          ${isVisible ? "translate-y-0" : "-translate-y-full"}
+          ${isScrolled ? "bg-white/90 backdrop-blur-md shadow-md" : "bg-white"}
         `}
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-6">
-          <div className="flex items-center justify-between gap-2 h-16 md:h-20">
 
+          {/* ROW 1 */}
+          <div className="flex items-center justify-between gap-4 h-16 md:h-20">
+
+            {/* LOGO */}
             <Link
               href="/"
-              className="
-                font-[Poppins] 
-                font-extrabold 
-                text-black 
-                select-none
-                tracking-[0.20em] 
-                text-base        /* Mobile */
-                sm:text-lg       /* Small devices */
-                md:text-xl       /* Tablets */
-                lg:text-2xl      /* Desktop */
-                xl:text-3xl      /* Large screens */
-              "
+              className="font-[Poppins] font-extrabold text-black tracking-[0.14em] text-lg md:text-xl whitespace-nowrap"
             >
               DEALMITRA
             </Link>
 
-            <div className="flex-1 flex justify-center">
-              <form className="relative w-full max-w-xl">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+            {/* MOBILE CONTROLS */}
+            <div className="flex items-center gap-3 md:hidden">
+              <button
+                onClick={() => setMobileOpen((s) => !s)}
+                className="p-2 rounded-md hover:bg-gray-100 transition"
+              >
+                {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
 
+              <Link href="/wishlist" className="relative p-2 rounded-md hover:bg-gray-100 transition">
+                <Heart className="w-5 h-5 text-gray-700" />
+                {wishlist.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-green-600 text-white text-xs rounded-full w-4 h-4 flex justify-center items-center">
+                    {wishlist.length}
+                  </span>
+                )}
+              </Link>
+            </div>
+
+            {/* DESKTOP NAV + SEARCH */}
+            <div className="hidden md:flex items-center gap-4 flex-1">
+
+              {/* SEARCH */}
+              <div className="relative flex-1 min-w-64 max-w-2xl">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={handleKeyDown}
+                  onKeyDown={handleSearchKey}
                   placeholder="Search for products..."
-                  className="w-full pl-10 pr-3 py-3 bg-gray-50 rounded-2xl outline-none text-gray-700 placeholder-gray-400 focus:ring-1 focus:ring-green-100"
+                  className="w-full pl-10 pr-3 py-2.5 bg-gray-50 rounded-xl outline-none text-gray-700"
                 />
-              </form>
+              </div>
+
+              {/* DESKTOP NAV LINKS */}
+              <nav className="flex items-center gap-4 whitespace-nowrap">
+
+                {/* AI Compare */}
+                <Link href="/ai-compare" className="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-50">
+                  <GitCompareArrows className="w-4 h-4" /> <span className="text-sm">AI Compare</span>
+                </Link>
+
+                {/* PRODUCTS DROPDOWN */}
+                <div className="relative">
+                  <button
+                    onClick={toggleProducts}
+                    className="flex items-center gap-1 px-2 py-1 rounded hover:bg-gray-50"
+                  >
+                    <span className="text-sm">Products</span>
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform ${accOpenProducts ? "rotate-180" : ""}`}
+                    />
+                  </button>
+
+                  {accOpenProducts && (
+                    <div
+                      className="absolute top-full left-0 mt-2 bg-white border shadow-lg rounded-lg p-3 w-48 z-50
+                      animate-dropdown"
+                    >
+                      <Link href="/product/popular?isPopular=true" className="block py-2 hover:text-green-600">
+                        Popular
+                      </Link>
+                      <Link href="/product/newrelease?newRelease=true" className="block py-2 hover:text-green-600">
+                        New Releases
+                      </Link>
+                      <Link href="/product/bestseller?bestSeller=true" className="block py-2 hover:text-green-600">
+                        Best Sellers
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                {/* CATEGORIES DROPDOWN */}
+                <div className="relative">
+                  <button
+                    onClick={toggleCategories}
+                    className="flex items-center gap-1 px-2 py-1 rounded hover:bg-gray-50"
+                  >
+                    <span className="text-sm">Categories</span>
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform ${accOpenCategories ? "rotate-180" : ""}`}
+                    />
+                  </button>
+
+                  {accOpenCategories && (
+                    <div
+                      className="absolute top-full left-0 mt-2 bg-white border shadow-lg rounded-lg p-3 w-56 max-h-64 overflow-y-auto z-50 animate-dropdown"
+                    >
+                      {categories.map((c: any) => (
+                        <Link
+                          key={c._id}
+                          href={`/category/${c.name}?category=${c._id}`}
+                          className="block py-2 hover:text-green-600"
+                        >
+                          {c.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </nav>
+            </div>
+          </div>
+
+          {/* MOBILE SEARCH BAR */}
+          <div className="md:hidden mt-2 mb-2">
+            <div className="relative w-full">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleSearchKey}
+                placeholder="Search products..."
+                className="w-full pl-10 pr-3 py-2.5 bg-gray-50 rounded-xl outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* MOBILE ACCORDION MENU */}
+        <div
+          className={`md:hidden bg-white border-t transition-all duration-300 overflow-hidden ${
+            mobileOpen ? "max-h-[80vh] shadow-lg" : "max-h-0"
+          }`}
+        >
+          <div className="px-4 py-4 space-y-3">
+
+            {/* TOOLS */}
+            <div>
+              <button
+                onClick={toggleTools}
+                className="w-full flex items-center justify-between px-2 py-3 rounded hover:bg-gray-50"
+              >
+                <div className="flex items-center gap-2">
+                  <GitCompareArrows className="w-5 h-5" />
+                  <span className="font-medium">Tools</span>
+                </div>
+                <ChevronDown
+                  className={`w-4 h-4 transition-transform ${accOpenTools ? "rotate-180" : ""}`}
+                />
+              </button>
+
+              <div
+                className={`accordion-content ${
+                  accOpenTools ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                }`}
+              >
+                <Link href="/ai-compare" className="block py-2 hover:text-green-600 pl-6">
+                  AI Compare
+                </Link>
+              </div>
             </div>
 
-            <Link href="/wishlist" className="relative">
-              <Heart className="w-6 h-6 text-gray-600 hover:text-green-600 transition" />
-              {wishlist.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-green-600 text-white text-xs font-semibold rounded-full w-4 h-4 flex items-center justify-center">
-                  {wishlist.length}
-                </span>
-              )}
-            </Link>
+            {/* PRODUCTS */}
+            <div>
+              <button
+                onClick={toggleProducts}
+                className="w-full flex items-center justify-between px-2 py-3 rounded hover:bg-gray-50"
+              >
+                <div className="flex items-center gap-2">
+                  <Layers3 className="w-5 h-5" />
+                  <span className="font-medium">Products</span>
+                </div>
+                <ChevronDown
+                  className={`w-4 h-4 transition-transform ${accOpenProducts ? "rotate-180" : ""}`}
+                />
+              </button>
 
+              <div
+                className={`accordion-content ${
+                  accOpenProducts ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                }`}
+              >
+                <Link href="/product/popular?isPopular=true" className="block py-2 hover:text-green-600 pl-6">
+                  Popular
+                </Link>
+                <Link href="/product/newrelease?newRelease=true" className="block py-2 hover:text-green-600 pl-6">
+                  New Releases
+                </Link>
+                <Link href="/product/bestseller?bestSeller=true" className="block py-2 hover:text-green-600 pl-6">
+                  Best Sellers
+                </Link>
+              </div>
+            </div>
+
+            {/* CATEGORIES */}
+            <div>
+              <button
+                onClick={toggleCategories}
+                className="w-full flex items-center justify-between px-2 py-3 rounded hover:bg-gray-50"
+              >
+                <div className="flex items-center gap-2">
+                  <ChevronDown className="w-5 h-5" />
+                  <span className="font-medium">Categories</span>
+                </div>
+                <ChevronDown
+                  className={`w-4 h-4 transition-transform ${accOpenCategories ? "rotate-180" : ""}`}
+                />
+              </button>
+
+              <div
+                className={`accordion-content ${
+                  accOpenCategories ? "max-h-[40vh] opacity-100" : "max-h-0 opacity-0"
+                } overflow-auto`}
+              >
+                {categories.map((c: any) => (
+                  <Link
+                    key={c._id}
+                    href={`/category/${c.name}?category=${c._id}`}
+                    className="block py-2 hover:text-green-600 pl-6"
+                  >
+                    {c.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* STATIC LINKS */}
+            <div className="pt-2 border-t text-sm">
+              <Link href="/deal" className="block py-2 hover:text-green-600">
+                Deals
+              </Link>
+              <Link href="/blog" className="block py-2 hover:text-green-600">
+                Blog
+              </Link>
+              <Link href="/contact" className="block py-2 hover:text-green-600">
+                Contact
+              </Link>
+            </div>
           </div>
         </div>
       </header>
 
-      <div className="h-16 md:h-20"></div>
+      <div className="h-[120px] md:h-[100px] mb-2" />
     </>
   );
 }

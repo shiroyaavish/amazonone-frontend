@@ -25,14 +25,14 @@ export default function Section({ title, products = [], id = null }: SectionProp
   if (!products?.length) return null;
 
   const handleViewBestSellers = () => {
-    return `/bestseller?bestSeller=true`
+    return `/product/bestseller?bestSeller=true`
   };
   const handleViewNewReleases = () => {
-    return `/newrelease?newRelease=true`;
+    return `/product/newrelease?newRelease=true`;
   };
 
   const handleViewPopular = () => {
-    return `/popular?isPopular=true`
+    return `/product/popular?isPopular=true`
   };
 
   const handleViewCategory = (name: string, categoryId: string) => {
