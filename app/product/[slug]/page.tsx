@@ -50,6 +50,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       //   brand: product.brand,
       //   retailer_item_id: product.metaTitle,
       // }
+    },
+    verification: {
+      google: "7KKI_7V1_ER8U4BCRYDtWTzR542aWACXMSueVhn5e5k",
     }
 
   };
