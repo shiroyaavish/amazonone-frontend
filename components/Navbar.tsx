@@ -4,12 +4,18 @@ import { useEffect, useRef, useState } from "react";
 import {
   Search,
   Heart,
-  Camera,
   GitCompareArrows,
   Layers3,
   ChevronDown,
   Menu,
-  X
+  X,
+  Sparkles,
+  TrendingUp,
+  Package,
+  Grid3x3,
+  FileText,
+  Mail,
+  User
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -20,9 +26,13 @@ export default function Navbar() {
   const [isVisible, setIsVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-
-  // mobile states
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Desktop dropdown states
+  const [productsOpen, setProductsOpen] = useState(false);
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
+
+  // Mobile accordion states
   const [accOpenProducts, setAccOpenProducts] = useState(false);
   const [accOpenCategories, setAccOpenCategories] = useState(false);
   const [accOpenTools, setAccOpenTools] = useState(false);
@@ -67,6 +77,8 @@ export default function Navbar() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setMobileOpen(false);
+        setProductsOpen(false);
+        setCategoriesOpen(false);
         setAccOpenProducts(false);
         setAccOpenCategories(false);
         setAccOpenTools(false);
@@ -76,7 +88,19 @@ export default function Navbar() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // 🔥 CLOSE OTHER ACCORDIONS
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setProductsOpen(false);
+      setCategoriesOpen(false);
+    };
+    if (productsOpen || categoriesOpen) {
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }
+  }, [productsOpen, categoriesOpen]);
+
+  // Mobile accordion toggles
   const toggleProducts = () => {
     setAccOpenProducts(!accOpenProducts);
     setAccOpenCategories(false);
@@ -95,18 +119,19 @@ export default function Navbar() {
 
   return (
     <>
-      {/* NAVBAR WRAPPER */}
+      {/* NAVBAR */}
       <header
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-300
           ${isVisible ? "translate-y-0" : "-translate-y-full"}
-          ${isScrolled ? "bg-white/90 backdrop-blur-md shadow-md" : "bg-white"}
+          ${isScrolled ? "bg-white/95 backdrop-blur-lg shadow-lg" : "bg-white shadow-sm"}
         `}
       >
-        <div className="max-w-7xl mx-auto px-3 sm:px-6">
 
-          {/* ROW 1 */}
-          <div className="flex items-center justify-between gap-4 h-16 md:h-20">
 
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          {/* Main Navbar */}
+          <div className="flex items-center justify-between gap-4 h-16 lg:h-18">
+            
             {/* LOGO */}
             <Link
               href="/"
@@ -115,242 +140,299 @@ export default function Navbar() {
               DEALMITRA
             </Link>
 
-            {/* MOBILE CONTROLS */}
-            <div className="flex items-center gap-3 md:hidden">
-              <button
-                onClick={() => setMobileOpen((s) => !s)}
-                className="p-2 rounded-md hover:bg-gray-100 transition"
-              >
-                {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-
-              <Link href="/wishlist" className="relative p-2 rounded-md hover:bg-gray-100 transition">
-                <Heart className="w-5 h-5 text-gray-700" />
-                {wishlist.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-green-600 text-white text-xs rounded-full w-4 h-4 flex justify-center items-center">
-                    {wishlist.length}
-                  </span>
-                )}
-              </Link>
-            </div>
-
-            {/* DESKTOP NAV + SEARCH */}
-            <div className="hidden md:flex items-center gap-4 flex-1">
-
-              {/* SEARCH */}
-              <div className="relative flex-1 min-w-64 max-w-2xl">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            {/* DESKTOP SEARCH & NAV */}
+            <div className="hidden lg:flex items-center gap-6 flex-1 max-w-3xl">
+              {/* Search Bar */}
+              <div className="relative flex-1">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={handleSearchKey}
-                  placeholder="Search for products..."
-                  className="w-full pl-10 pr-3 py-2.5 bg-gray-50 rounded-xl outline-none text-gray-700"
+                  placeholder="Search for products, brands, and more..."
+                  className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-full outline-none text-sm text-gray-700 focus:bg-white focus:border-green-500 focus:ring-2 focus:ring-green-100 transition-all"
                 />
               </div>
+            </div>
 
-              {/* DESKTOP NAV LINKS */}
-              <nav className="flex items-center gap-4 whitespace-nowrap">
+            {/* DESKTOP NAV LINKS */}
+            <nav className="hidden lg:flex items-center gap-1">
+              
+              {/* AI Compare */}
+              <Link 
+                href="/ai-compare" 
+                className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors group"
+              >
+                <GitCompareArrows className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                <span className="text-sm font-medium">AI Compare</span>
+              </Link>
 
-                {/* AI Compare */}
-                <Link href="/ai-compare" className="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-50">
-                  <GitCompareArrows className="w-4 h-4" /> <span className="text-sm">AI Compare</span>
-                </Link>
+              {/* Products Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setProductsOpen(!productsOpen);
+                    setCategoriesOpen(false);
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors"
+                >
+                  <Package className="w-4 h-4" />
+                  <span className="text-sm font-medium">Products</span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform ${productsOpen ? "rotate-180" : ""}`} />
+                </button>
 
-                {/* PRODUCTS DROPDOWN */}
-                <div className="relative">
-                  <button
-                    onClick={toggleProducts}
-                    className="flex items-center gap-1 px-2 py-1 rounded hover:bg-gray-50"
-                  >
-                    <span className="text-sm">Products</span>
-                    <ChevronDown
-                      className={`w-4 h-4 transition-transform ${accOpenProducts ? "rotate-180" : ""}`}
-                    />
-                  </button>
-
-                  {accOpenProducts && (
-                    <div
-                      className="absolute top-full left-0 mt-2 bg-white border shadow-lg rounded-lg p-3 w-48 z-50
-                      animate-dropdown"
+                {productsOpen && (
+                  <div className="absolute top-full right-0 mt-2 w-56 bg-white border border-gray-100 shadow-xl rounded-xl p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <Link 
+                      href="/product/popular?isPopular=true" 
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors group"
+                      onClick={() => setProductsOpen(false)}
                     >
-                      <Link href="/product/popular?isPopular=true" className="block py-2 hover:text-green-600">
-                        Popular
-                      </Link>
-                      <Link href="/product/newrelease?newRelease=true" className="block py-2 hover:text-green-600">
-                        New Releases
-                      </Link>
-                      <Link href="/product/bestseller?bestSeller=true" className="block py-2 hover:text-green-600">
-                        Best Sellers
-                      </Link>
-                    </div>
-                  )}
-                </div>
-
-                {/* CATEGORIES DROPDOWN */}
-                <div className="relative">
-                  <button
-                    onClick={toggleCategories}
-                    className="flex items-center gap-1 px-2 py-1 rounded hover:bg-gray-50"
-                  >
-                    <span className="text-sm">Categories</span>
-                    <ChevronDown
-                      className={`w-4 h-4 transition-transform ${accOpenCategories ? "rotate-180" : ""}`}
-                    />
-                  </button>
-
-                  {accOpenCategories && (
-                    <div
-                      className="absolute top-full left-0 mt-2 bg-white border shadow-lg rounded-lg p-3 w-56 max-h-64 overflow-y-auto z-50 animate-dropdown"
+                      <TrendingUp className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" />
+                      <span className="text-sm font-medium">Popular</span>
+                    </Link>
+                    <Link 
+                      href="/product/newrelease?newRelease=true" 
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors group"
+                      onClick={() => setProductsOpen(false)}
                     >
+                      <Sparkles className="w-4 h-4 text-purple-500 group-hover:scale-110 transition-transform" />
+                      <span className="text-sm font-medium">New Releases</span>
+                    </Link>
+                    <Link 
+                      href="/product/bestseller?bestSeller=true" 
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors group"
+                      onClick={() => setProductsOpen(false)}
+                    >
+                      <Package className="w-4 h-4 text-green-500 group-hover:scale-110 transition-transform" />
+                      <span className="text-sm font-medium">Best Sellers</span>
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* Categories Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCategoriesOpen(!categoriesOpen);
+                    setProductsOpen(false);
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors"
+                >
+                  <Grid3x3 className="w-4 h-4" />
+                  <span className="text-sm font-medium">Categories</span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform ${categoriesOpen ? "rotate-180" : ""}`} />
+                </button>
+
+                {categoriesOpen && (
+                  <div className="absolute top-full right-0 mt-2 w-64 bg-white border border-gray-100 shadow-xl rounded-xl p-3 max-h-80 overflow-y-auto z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="grid gap-1">
                       {categories.map((c: any) => (
                         <Link
                           key={c._id}
                           href={`/category/${c.name}?category=${c._id}`}
-                          className="block py-2 hover:text-green-600"
+                          className="px-4 py-2.5 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 text-sm font-medium transition-colors"
+                          onClick={() => setCategoriesOpen(false)}
                         >
                           {c.name}
                         </Link>
                       ))}
                     </div>
-                  )}
-                </div>
-              </nav>
+                  </div>
+                )}
+              </div>
+
+              {/* Blog */}
+              <Link 
+                href="/blog" 
+                className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors group"
+              >
+                <FileText className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                <span className="text-sm font-medium">Blog</span>
+              </Link>
+
+              {/* Wishlist */}
+              <Link 
+                href="/wishlist" 
+                className="relative flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors group"
+              >
+                <Heart className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                <span className="text-sm font-medium">Wishlist</span>
+                {wishlist.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-green-600 text-white text-[10px] font-bold rounded-full w-5 h-5 flex justify-center items-center shadow-md">
+                    {wishlist.length}
+                  </span>
+                )}
+              </Link>
+            </nav>
+
+            {/* MOBILE CONTROLS */}
+            <div className="flex items-center gap-2 lg:hidden">
+              <Link href="/wishlist" className="relative p-2.5 rounded-lg hover:bg-gray-100 transition-colors">
+                <Heart className="w-5 h-5 text-gray-700" />
+                {wishlist.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-green-600 text-white text-[10px] font-bold rounded-full w-4 h-4 flex justify-center items-center">
+                    {wishlist.length}
+                  </span>
+                )}
+              </Link>
+              <button
+                onClick={() => setMobileOpen(!mobileOpen)}
+                className="p-2.5 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
             </div>
           </div>
 
           {/* MOBILE SEARCH BAR */}
-          <div className="md:hidden mt-2 mb-2">
+          <div className="lg:hidden pb-3">
             <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={handleSearchKey}
                 placeholder="Search products..."
-                className="w-full pl-10 pr-3 py-2.5 bg-gray-50 rounded-xl outline-none"
+                className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-full outline-none text-sm focus:bg-white focus:border-green-500 focus:ring-2 focus:ring-green-100 transition-all"
               />
             </div>
           </div>
         </div>
 
-        {/* MOBILE ACCORDION MENU */}
+        {/* MOBILE MENU */}
         <div
-          className={`md:hidden bg-white border-t transition-all duration-300 overflow-hidden ${
-            mobileOpen ? "max-h-[80vh] shadow-lg" : "max-h-0"
+          className={`lg:hidden bg-white border-t transition-all duration-300 overflow-hidden ${
+            mobileOpen ? "max-h-[calc(100vh-140px)] shadow-xl" : "max-h-0"
           }`}
         >
-          <div className="px-4 py-4 space-y-3">
+          <div className="px-4 py-4 space-y-2 max-h-[calc(100vh-140px)] overflow-y-auto">
 
-            {/* TOOLS */}
-            <div>
-              <button
-                onClick={toggleTools}
-                className="w-full flex items-center justify-between px-2 py-3 rounded hover:bg-gray-50"
-              >
-                <div className="flex items-center gap-2">
-                  <GitCompareArrows className="w-5 h-5" />
-                  <span className="font-medium">Tools</span>
-                </div>
-                <ChevronDown
-                  className={`w-4 h-4 transition-transform ${accOpenTools ? "rotate-180" : ""}`}
-                />
-              </button>
+            {/* AI Compare */}
+            <Link 
+              href="/ai-compare" 
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              <GitCompareArrows className="w-5 h-5" />
+              <span className="font-medium">AI Compare</span>
+            </Link>
 
-              <div
-                className={`accordion-content ${
-                  accOpenTools ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-                }`}
-              >
-                <Link href="/ai-compare" className="block py-2 hover:text-green-600 pl-6">
-                  AI Compare
-                </Link>
-              </div>
-            </div>
-
-            {/* PRODUCTS */}
+            {/* Products Accordion */}
             <div>
               <button
                 onClick={toggleProducts}
-                className="w-full flex items-center justify-between px-2 py-3 rounded hover:bg-gray-50"
+                className="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <div className="flex items-center gap-2">
-                  <Layers3 className="w-5 h-5" />
-                  <span className="font-medium">Products</span>
+                <div className="flex items-center gap-3">
+                  <Package className="w-5 h-5 text-gray-700" />
+                  <span className="font-medium text-gray-700">Products</span>
                 </div>
                 <ChevronDown
-                  className={`w-4 h-4 transition-transform ${accOpenProducts ? "rotate-180" : ""}`}
+                  className={`w-4 h-4 text-gray-500 transition-transform ${accOpenProducts ? "rotate-180" : ""}`}
                 />
               </button>
 
               <div
-                className={`accordion-content ${
-                  accOpenProducts ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                className={`transition-all duration-300 overflow-hidden ${
+                  accOpenProducts ? "max-h-96 opacity-100 mt-1" : "max-h-0 opacity-0"
                 }`}
               >
-                <Link href="/product/popular?isPopular=true" className="block py-2 hover:text-green-600 pl-6">
-                  Popular
-                </Link>
-                <Link href="/product/newrelease?newRelease=true" className="block py-2 hover:text-green-600 pl-6">
-                  New Releases
-                </Link>
-                <Link href="/product/bestseller?bestSeller=true" className="block py-2 hover:text-green-600 pl-6">
-                  Best Sellers
-                </Link>
+                <div className="space-y-1 pl-4">
+                  <Link 
+                    href="/product/popular?isPopular=true" 
+                    className="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-green-50 text-gray-600 hover:text-green-600 transition-colors"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    <TrendingUp className="w-4 h-4" />
+                    <span className="text-sm">Popular</span>
+                  </Link>
+                  <Link 
+                    href="/product/newrelease?newRelease=true" 
+                    className="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-green-50 text-gray-600 hover:text-green-600 transition-colors"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    <span className="text-sm">New Releases</span>
+                  </Link>
+                  <Link 
+                    href="/product/bestseller?bestSeller=true" 
+                    className="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-green-50 text-gray-600 hover:text-green-600 transition-colors"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    <Package className="w-4 h-4" />
+                    <span className="text-sm">Best Sellers</span>
+                  </Link>
+                </div>
               </div>
             </div>
 
-            {/* CATEGORIES */}
+            {/* Categories Accordion */}
             <div>
               <button
                 onClick={toggleCategories}
-                className="w-full flex items-center justify-between px-2 py-3 rounded hover:bg-gray-50"
+                className="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <div className="flex items-center gap-2">
-                  <ChevronDown className="w-5 h-5" />
-                  <span className="font-medium">Categories</span>
+                <div className="flex items-center gap-3">
+                  <Grid3x3 className="w-5 h-5 text-gray-700" />
+                  <span className="font-medium text-gray-700">Categories</span>
                 </div>
                 <ChevronDown
-                  className={`w-4 h-4 transition-transform ${accOpenCategories ? "rotate-180" : ""}`}
+                  className={`w-4 h-4 text-gray-500 transition-transform ${accOpenCategories ? "rotate-180" : ""}`}
                 />
               </button>
 
               <div
-                className={`accordion-content ${
-                  accOpenCategories ? "max-h-[40vh] opacity-100" : "max-h-0 opacity-0"
-                } overflow-auto`}
+                className={`transition-all duration-300 overflow-hidden ${
+                  accOpenCategories ? "max-h-96 opacity-100 mt-1" : "max-h-0 opacity-0"
+                }`}
               >
-                {categories.map((c: any) => (
-                  <Link
-                    key={c._id}
-                    href={`/category/${c.name}?category=${c._id}`}
-                    className="block py-2 hover:text-green-600 pl-6"
-                  >
-                    {c.name}
-                  </Link>
-                ))}
+                <div className="space-y-1 pl-4 max-h-64 overflow-y-auto">
+                  {categories.map((c: any) => (
+                    <Link
+                      key={c._id}
+                      href={`/category/${c.name}?category=${c._id}`}
+                      className="block px-4 py-2.5 rounded-lg hover:bg-green-50 text-gray-600 hover:text-green-600 text-sm transition-colors"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {c.name}
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* STATIC LINKS */}
-            <div className="pt-2 border-t text-sm">
-              <Link href="/deal" className="block py-2 hover:text-green-600">
-                Deals
-              </Link>
-              <Link href="/blog" className="block py-2 hover:text-green-600">
-                Blog
-              </Link>
-              <Link href="/contact" className="block py-2 hover:text-green-600">
-                Contact
-              </Link>
-            </div>
+            {/* Blog */}
+            <Link 
+              href="/blog" 
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              <FileText className="w-5 h-5" />
+              <span className="font-medium">Blog</span>
+            </Link>
+
+            {/* Contact */}
+            <Link 
+              href="/contact" 
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              <Mail className="w-5 h-5" />
+              <span className="font-medium">Contact</span>
+            </Link>
+
           </div>
         </div>
       </header>
 
-      <div className="h-[120px] md:h-[100px] mb-2" />
+      {/* Spacer */}
+      <div className="h-[132px] lg:h-[88px]" />
     </>
   );
 }

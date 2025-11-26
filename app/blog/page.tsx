@@ -17,10 +17,34 @@ export default function BlogsPage() {
     return (
         <>
             <Head>
-                <title>All Blogs | DealMitra</title>
+                <title>All Blogs | Latest Tech News, Reviews & Buying Guides | DealMitra</title>
                 <meta
                     name="description"
-                    content="Read the latest blogs on smartphones, gadgets, tech guides, buying guides, reviews, and more."
+                    content="Explore all blogs on smartphones, gadgets, tech reviews, buying guides, comparisons, and the latest tech news at DealMitra."
+                />
+                <meta
+                    name="keywords"
+                    content="tech blogs, smartphone guide, gadget news, buying guides, product reviews, latest tech, DealMitra blogs, technology articles"
+                />
+                <link rel="canonical" href="https://dealmitra.online/blog" />
+
+                {/* Open Graph */}
+                <meta property="og:title" content="All Blogs | Latest Tech News, Reviews & Buying Guides | DealMitra" />
+                <meta property="og:description" content="Browse the latest technology blogs, smartphone buying guides, top product reviews, and gadget comparisons." />
+                <meta property="og:url" content="https://dealmitra.online/blog" />
+                <meta property="og:site_name" content="DealMitra" />
+                <meta
+                    property="og:image"
+                    content="https://dealmitra.online/api/og?title=All%20Blogs&subtitle=DealMitra%20Blog"
+                />
+
+                {/* Twitter */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="All Blogs | Latest Tech News, Reviews & Buying Guides | DealMitra" />
+                <meta name="twitter:description" content="Explore buying guides, reviews, tech news & comparison articles." />
+                <meta
+                    name="twitter:image"
+                    content="https://dealmitra.online/api/og?title=All%20Blogs&subtitle=DealMitra%20Blog"
                 />
             </Head>
 
