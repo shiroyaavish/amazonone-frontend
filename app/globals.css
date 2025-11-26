@@ -28,3 +28,10 @@ body {
   font-style: normal;
   font-weight: 400;
 }
+
+.prose table thead th {
+  position: sticky;
+  top: 0;
+  background: #f8fafc;
+  z-index: 10;
+}

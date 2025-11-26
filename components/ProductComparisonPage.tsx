@@ -120,13 +120,29 @@ export default function ProductComparisonPage() {
                     Comparison Results
                   </h2>
                 </div>
-                <div
-                  className="prose prose-slate max-w-none prose-headings:text-slate-900 prose-p:text-slate-700"
-                  dangerouslySetInnerHTML={{ __html: resultHtml }}
-                />
+
+                {/* Scrollable container */}
+                <div className="prose prose-slate max-w-none prose-headings:text-slate-900 prose-p:text-slate-700 overflow-scroll">
+                  <div
+                    className="
+            overflow-auto
+            max-h-[500px]
+            border border-slate-300
+            rounded-lg
+            shadow-sm
+            [&_table]:w-full
+            [&_th]:bg-slate-100
+            [&_td]:p-3
+            [&_th]:p-3
+            [&_tr:nth-child(even)_td]:bg-slate-50
+          "
+                    dangerouslySetInnerHTML={{ __html: resultHtml }}
+                  />
+                </div>
               </div>
             </div>
           )}
+
         </div>
 
         {/* Footer Note */}
