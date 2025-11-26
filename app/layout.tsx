@@ -43,7 +43,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap"
           rel="stylesheet"
         />
-
+        <meta name="google-site-verification" content="7KKI_7V1_ER8U4BCRYDtWTzR542aWACXMSueVhn5e5k" />
         {/* Google Logo Schema */}
         <script
           type="application/ld+json"
