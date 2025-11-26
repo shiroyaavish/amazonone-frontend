@@ -24,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "Deal Mitra",
       images: [
         {
-          url: "/logo.png",
+          url: "https://dealmitra.online/logo.png",
           width: 1200,
           height: 630,
           alt: "AI Product Comparison - Deal Mitra",
@@ -37,7 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: "AI Product Comparison | Deal Mitra",
       description:
         "Compare products instantly using AI. Get smart insights, pros & cons, and more on Deal Mitra.",
-      images: ["/logo.png"],
+      images: ["https://dealmitra.online/logo.png"],
     },
   };
 }

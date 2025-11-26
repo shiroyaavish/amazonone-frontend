@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Deal Mitra - Best Product, Best Deals",
     description: "Shop products at the best prices.",
-    url: "https://dealmirta.online",
+    url: "https://dealmitra.online",
     siteName: "Deal Mitra",
     images: [
       {
@@ -52,8 +52,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               "@context": "https://schema.org",
               "@type": "Organization",
               name: "Deal Mitra",
-              url: "https://dealmirta.online",
-              logo: "https://dealmirta.online/logo.png",
+              url: "https://dealmitra.online",
+              logo: "https://dealmitra.online/logo.png",
             }),
           }}
         />
