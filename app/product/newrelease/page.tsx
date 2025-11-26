@@ -11,17 +11,19 @@ export async function generateMetadata(): Promise<Metadata> {
             type: "website",
             title: "New release products",
             description: "Find all new release products",
-            //   images: product.images?.map((img: string) => ({ url: img })),
             siteName: "Deal Mitra",
-            url: "/newrelease",
-            // product: {
-            //   brand: product.brand,
-            //   retailer_item_id: product.metaTitle,
-            // }
-        }
-
+            url: "https://dealmitra.online/product/newrelease?newRelease=true",
+            images: [
+                {
+                    url: "https://dealmitra.online/logo.png", // MUST BE FULL URL
+                    width: 512,
+                    height: 512,
+                }
+            ],
+        },
     };
 }
+
 export default async function NewReleasePage() {
     return (<div className="min-h-screen bg-gray-50">
         <Suspense

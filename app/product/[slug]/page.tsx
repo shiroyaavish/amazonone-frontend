@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: product.metaDescription,
       images: product.images?.map((img: string) => ({ url: img })),
       siteName: "Deal Mitra",
-      url: product.affiliateUrl,
+      url: `https://dealmitra.online/product/${slug}`,
       // product: {
       //   brand: product.brand,
       //   retailer_item_id: product.metaTitle,

@@ -8,14 +8,14 @@ export const metadata: Metadata = {
   title: "Deal Mitra - Best Product, Best Deals",
   description: "Shop products at the best prices.",
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.png",
+    icon: "https://dealmitra.online/favicon.ico",
+    shortcut: "https://dealmitra.online/favicon.png",
     apple: [
-      { url: "/apple-touch-icon-60x60.png", sizes: "60x60" },
-      { url: "/apple-touch-icon-76x76.png", sizes: "76x76" },
-      { url: "/apple-touch-icon-120x120.png", sizes: "120x120" },
-      { url: "/apple-touch-icon-152x152.png", sizes: "152x152" },
-      { url: "/apple-touch-icon-180x180.png", sizes: "180x180" }
+      { url: "https://dealmitra.online/apple-touch-icon-60x60.png", sizes: "60x60" },
+      { url: "https://dealmitra.online/apple-touch-icon-76x76.png", sizes: "76x76" },
+      { url: "https://dealmitra.online/apple-touch-icon-120x120.png", sizes: "120x120" },
+      { url: "https://dealmitra.online/apple-touch-icon-152x152.png", sizes: "152x152" },
+      { url: "https://dealmitra.online/apple-touch-icon-180x180.png", sizes: "180x180" }
     ],
   },
   openGraph: {
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     siteName: "Deal Mitra",
     images: [
       {
-        url: "/logo.png",
+        url: "https://dealmitra.online/logo.png",
         width: 512,
         height: 512,
       },

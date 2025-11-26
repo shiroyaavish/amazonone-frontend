@@ -11,17 +11,19 @@ export async function generateMetadata(): Promise<Metadata> {
             type: "website",
             title: "Popular products",
             description: "Find all popular products",
-            //   images: product.images?.map((img: string) => ({ url: img })),
             siteName: "Deal Mitra",
-            url: "/popular",
-            // product: {
-            //   brand: product.brand,
-            //   retailer_item_id: product.metaTitle,
-            // }
-        }
-
+            url: "https://dealmitra.online/product/popular?isPopular=true",
+            images: [
+                {
+                    url: "https://dealmitra.online/logo.png", // FULL URL
+                    width: 512,
+                    height: 512,
+                }
+            ]
+        },
     };
 }
+
 export default async function PopularPage() {
     return (<div className="min-h-screen bg-gray-50">
         <Suspense
