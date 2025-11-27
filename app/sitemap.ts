@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-    const appUrl = process.env.NEXT_APP_URL
+    const appUrl = "https://dealmitra.online"
     const [categoriesRes, productsRes, blogsRes] = await Promise.all([
         fetch(`${baseUrl}/category`, { cache: "no-store" }),
         fetch(`${baseUrl}/product/withoutPage`, { cache: "no-store" }),
