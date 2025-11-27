@@ -67,7 +67,10 @@ export default function Footer() {
             <br />
             <br />
             <h4 className="font-semibold text-base mb-4 text-black">Pages</h4>
-            <p><Link className="hover:text-black transition" href="/blog">Blogs</Link></p>
+            <ul className="text-sm text-gray-600 space-y-2">
+              <li><Link className="hover:text-black transition" href="/blog">Blogs</Link></li>
+              <li><Link className="hover:text-black transition" href="/aboutus">About Us</Link></li>
+            </ul>
           </div>
 
           {/* Column 2 */}
