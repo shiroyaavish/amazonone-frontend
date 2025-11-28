@@ -21,6 +21,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useWishlistStore } from "@/store/useWishlistStore";
 import { useHomeStore } from "@/store/useHomeStore";
+import { useProductStore } from "@/store/useProductStore";
 
 export default function Navbar() {
   const [isVisible, setIsVisible] = useState(true);
@@ -36,6 +37,7 @@ export default function Navbar() {
   const [accOpenProducts, setAccOpenProducts] = useState(false);
   const [accOpenCategories, setAccOpenCategories] = useState(false);
   const [accOpenTools, setAccOpenTools] = useState(false);
+  const { fetchProducts, setFilter } = useProductStore()
 
   const { categories, fetchCategoriesData } = useHomeStore();
   const wishlist = useWishlistStore((s) => s.wishlist);
@@ -63,13 +65,15 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const handleSearchKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleSearchKey = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       const params = new URLSearchParams(searchParams.toString());
       if (searchQuery.trim()) params.set("search", searchQuery.trim());
       else params.delete("search");
       router.push(`/product?${params.toString()}`);
+      setFilter("search",searchQuery.trim())
       setMobileOpen(false);
+      await fetchProducts(1)
     }
   };
 
@@ -131,7 +135,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           {/* Main Navbar */}
           <div className="flex items-center justify-between gap-4 h-16 lg:h-18">
-            
+
             {/* LOGO */}
             <Link
               href="/"
@@ -158,10 +162,10 @@ export default function Navbar() {
 
             {/* DESKTOP NAV LINKS */}
             <nav className="hidden lg:flex items-center gap-1">
-              
+
               {/* AI Compare */}
-              <Link 
-                href="/ai-compare" 
+              <Link
+                href="/ai-compare"
                 className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors group"
               >
                 <GitCompareArrows className="w-4 h-4 group-hover:scale-110 transition-transform" />
@@ -185,24 +189,24 @@ export default function Navbar() {
 
                 {productsOpen && (
                   <div className="absolute top-full right-0 mt-2 w-56 bg-white border border-gray-100 shadow-xl rounded-xl p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                    <Link 
-                      href="/product/popular?isPopular=true" 
+                    <Link
+                      href="/product/popular?isPopular=true"
                       className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors group"
                       onClick={() => setProductsOpen(false)}
                     >
                       <TrendingUp className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" />
                       <span className="text-sm font-medium">Popular</span>
                     </Link>
-                    <Link 
-                      href="/product/newrelease?newRelease=true" 
+                    <Link
+                      href="/product/newrelease?newRelease=true"
                       className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors group"
                       onClick={() => setProductsOpen(false)}
                     >
                       <Sparkles className="w-4 h-4 text-purple-500 group-hover:scale-110 transition-transform" />
                       <span className="text-sm font-medium">New Releases</span>
                     </Link>
-                    <Link 
-                      href="/product/bestseller?bestSeller=true" 
+                    <Link
+                      href="/product/bestseller?bestSeller=true"
                       className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors group"
                       onClick={() => setProductsOpen(false)}
                     >
@@ -247,8 +251,8 @@ export default function Navbar() {
               </div>
 
               {/* Blog */}
-              <Link 
-                href="/blog" 
+              <Link
+                href="/blog"
                 className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors group"
               >
                 <FileText className="w-4 h-4 group-hover:scale-110 transition-transform" />
@@ -256,8 +260,8 @@ export default function Navbar() {
               </Link>
 
               {/* Wishlist */}
-              <Link 
-                href="/wishlist" 
+              <Link
+                href="/wishlist"
                 className="relative flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors group"
               >
                 <Heart className="w-4 h-4 group-hover:scale-110 transition-transform" />
@@ -307,15 +311,14 @@ export default function Navbar() {
 
         {/* MOBILE MENU */}
         <div
-          className={`lg:hidden bg-white border-t transition-all duration-300 overflow-hidden ${
-            mobileOpen ? "max-h-[calc(100vh-140px)] shadow-xl" : "max-h-0"
-          }`}
+          className={`lg:hidden bg-white border-t transition-all duration-300 overflow-hidden ${mobileOpen ? "max-h-[calc(100vh-140px)] shadow-xl" : "max-h-0"
+            }`}
         >
           <div className="px-4 py-4 space-y-2 max-h-[calc(100vh-140px)] overflow-y-auto">
 
             {/* AI Compare */}
-            <Link 
-              href="/ai-compare" 
+            <Link
+              href="/ai-compare"
               className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors"
               onClick={() => setMobileOpen(false)}
             >
@@ -339,29 +342,28 @@ export default function Navbar() {
               </button>
 
               <div
-                className={`transition-all duration-300 overflow-hidden ${
-                  accOpenProducts ? "max-h-96 opacity-100 mt-1" : "max-h-0 opacity-0"
-                }`}
+                className={`transition-all duration-300 overflow-hidden ${accOpenProducts ? "max-h-96 opacity-100 mt-1" : "max-h-0 opacity-0"
+                  }`}
               >
                 <div className="space-y-1 pl-4">
-                  <Link 
-                    href="/product/popular?isPopular=true" 
+                  <Link
+                    href="/product/popular?isPopular=true"
                     className="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-green-50 text-gray-600 hover:text-green-600 transition-colors"
                     onClick={() => setMobileOpen(false)}
                   >
                     <TrendingUp className="w-4 h-4" />
                     <span className="text-sm">Popular</span>
                   </Link>
-                  <Link 
-                    href="/product/newrelease?newRelease=true" 
+                  <Link
+                    href="/product/newrelease?newRelease=true"
                     className="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-green-50 text-gray-600 hover:text-green-600 transition-colors"
                     onClick={() => setMobileOpen(false)}
                   >
                     <Sparkles className="w-4 h-4" />
                     <span className="text-sm">New Releases</span>
                   </Link>
-                  <Link 
-                    href="/product/bestseller?bestSeller=true" 
+                  <Link
+                    href="/product/bestseller?bestSeller=true"
                     className="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-green-50 text-gray-600 hover:text-green-600 transition-colors"
                     onClick={() => setMobileOpen(false)}
                   >
@@ -388,9 +390,8 @@ export default function Navbar() {
               </button>
 
               <div
-                className={`transition-all duration-300 overflow-hidden ${
-                  accOpenCategories ? "max-h-96 opacity-100 mt-1" : "max-h-0 opacity-0"
-                }`}
+                className={`transition-all duration-300 overflow-hidden ${accOpenCategories ? "max-h-96 opacity-100 mt-1" : "max-h-0 opacity-0"
+                  }`}
               >
                 <div className="space-y-1 pl-4 max-h-64 overflow-y-auto">
                   {categories.map((c: any) => (
@@ -408,8 +409,8 @@ export default function Navbar() {
             </div>
 
             {/* Blog */}
-            <Link 
-              href="/blog" 
+            <Link
+              href="/blog"
               className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors"
               onClick={() => setMobileOpen(false)}
             >
@@ -418,8 +419,8 @@ export default function Navbar() {
             </Link>
 
             {/* Contact */}
-            <Link 
-              href="/contact" 
+            <Link
+              href="/contact"
               className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors"
               onClick={() => setMobileOpen(false)}
             >

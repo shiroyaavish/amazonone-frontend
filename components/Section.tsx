@@ -52,7 +52,7 @@ export default function Section({ title, products = [], id = null }: SectionProp
   return (
     <section className="mt-10">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-xl font-semibold">{title}</h2>
+        <h2 className="text-xl font-semibold">{title[0].toUpperCase()}{title.slice(1)}</h2>
         <Link href={handleView()}>
           <p className="text-green-600 text-sm hover:underline">
             View More →
