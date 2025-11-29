@@ -11,6 +11,7 @@ import {
 import ProductCard from "@/components/ProductCard";
 import { useProductStore } from "@/store/useProductStore";
 import { useSearchParams } from "next/navigation";
+import AdBanner from "./AddBanner";
 
 export default function ProductFilter() {
   const searchParams = useSearchParams();
@@ -505,8 +506,11 @@ export default function ProductFilter() {
               </p>
 
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                {products.map((p) => (
-                  <ProductCard key={p._id} product={p} />
+                {products.map((p, i) => (
+                  <>
+                    {(i + 1) % 15 == 0 && <AdBanner />}
+                    <ProductCard key={p._id} product={p} />
+                  </>
                 ))}
               </div>
             </>

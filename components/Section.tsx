@@ -1,6 +1,7 @@
 import React from "react";
 import ProductCard from "./ProductCard";
 import Link from "next/link";
+import AdBanner from "./AddBanner";
 
 interface Product {
   _id: string;
@@ -61,8 +62,10 @@ export default function Section({ title, products = [], id = null }: SectionProp
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        {products.map((p) => (
-          <ProductCard key={p._id} product={p} />
+        {products.map((p, i) => (
+          <>
+            <ProductCard key={p._id} product={p} />
+          </>
         ))}
       </div>
     </section>
