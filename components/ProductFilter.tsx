@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition, useRef } from "react";
 import {
   Loader2,
   X,
@@ -13,7 +13,6 @@ import { useProductStore } from "@/store/useProductStore";
 import { useSearchParams } from "next/navigation";
 
 export default function ProductFilter() {
-
   const searchParams = useSearchParams();
 
   const {
@@ -40,6 +39,7 @@ export default function ProductFilter() {
   const [isCategoryOpen, setIsCategoryOpen] = useState(true);
   const [isPriceOpen, setIsPriceOpen] = useState(true);
   const [isQuickOpen, setIsQuickOpen] = useState(true);
+  const [isPending, startTransition] = useTransition();
 
   const [localFilters, setLocalFilters] = useState({
     isPopular: false,
@@ -49,6 +49,10 @@ export default function ProductFilter() {
     maxPrice: "",
     category: [] as string[],
   });
+
+  // ⬇️ FIX — prevent focus loss
+  const minPriceRef = useRef<HTMLInputElement>(null);
+  const maxPriceRef = useRef<HTMLInputElement>(null);
 
   const activeFiltersCount =
     [
@@ -61,20 +65,16 @@ export default function ProductFilter() {
       search,
     ].filter(Boolean).length || 0;
 
-  // Initial sync from URL
   useEffect(() => {
     if (!searchParams) return;
 
     const urlPopular = searchParams.get("isPopular") === "true";
     const urlBest = searchParams.get("bestSeller") === "true";
     const urlNew = searchParams.get("newRelease") === "true";
-
     const urlMin = searchParams.get("minPrice") || "";
     const urlMax = searchParams.get("maxPrice") || "";
-
     const urlCategoryRaw = searchParams.get("category");
     const urlCategories = urlCategoryRaw ? urlCategoryRaw.split(",") : [];
-
     const urlSearch = searchParams.get("search") || "";
 
     setFilter("isPopular", urlPopular);
@@ -96,10 +96,8 @@ export default function ProductFilter() {
 
     fetchProducts(1);
     fetchCategoriesData();
-    // eslint-disable-next-line
   }, []);
 
-  // Premium Checkbox UI
   const PremiumCheckbox = ({ checked }: { checked: boolean }) => (
     <span
       className={`w-5 h-5 rounded-md border flex items-center justify-center transition ${checked
@@ -124,18 +122,11 @@ export default function ProductFilter() {
     </span>
   );
 
-  // Local handlers
   const toggleLocalBoolean = (
     key: "isPopular" | "bestSeller" | "newRelease"
   ) => {
     setLocalFilters((prev) => ({ ...prev, [key]: !prev[key] }));
   };
-
-  const handleLocalMinPrice = (val: string) =>
-    setLocalFilters((prev) => ({ ...prev, minPrice: val }));
-
-  const handleLocalMaxPrice = (val: string) =>
-    setLocalFilters((prev) => ({ ...prev, maxPrice: val }));
 
   const handleLocalCategoryClick = (categoryId: string) => {
     setLocalFilters((prev) => {
@@ -149,21 +140,30 @@ export default function ProductFilter() {
     });
   };
 
-  // APPLY FILTERS
+  // ⬇️ FIX — apply price using refs
   const applyFilters = () => {
+    const min = minPriceRef.current?.value || "";
+    const max = maxPriceRef.current?.value || "";
+
+    setLocalFilters((prev) => ({
+      ...prev,
+      minPrice: min,
+      maxPrice: max,
+    }));
+
     setFilter("isPopular", localFilters.isPopular);
     setFilter("bestSeller", localFilters.bestSeller);
     setFilter("newRelease", localFilters.newRelease);
-    setFilter("minPrice", localFilters.minPrice);
-    setFilter("maxPrice", localFilters.maxPrice);
+    setFilter("minPrice", min);
+    setFilter("maxPrice", max);
     setFilter("category", localFilters.category);
 
     const params = new URLSearchParams();
     if (localFilters.isPopular) params.set("isPopular", "true");
     if (localFilters.bestSeller) params.set("bestSeller", "true");
     if (localFilters.newRelease) params.set("newRelease", "true");
-    if (localFilters.minPrice) params.set("minPrice", localFilters.minPrice);
-    if (localFilters.maxPrice) params.set("maxPrice", localFilters.maxPrice);
+    if (min) params.set("minPrice", min);
+    if (max) params.set("maxPrice", max);
     if (localFilters.category.length)
       params.set("category", localFilters.category.join(","));
     if (search) params.set("search", search);
@@ -179,8 +179,11 @@ export default function ProductFilter() {
     setIsMobileSidebarOpen(false);
   };
 
-  // CLEAR FILTERS
   const clearFilters = () => {
+    resetFilters();
+    minPriceRef.current && (minPriceRef.current.value = "");
+    maxPriceRef.current && (maxPriceRef.current.value = "");
+
     setLocalFilters({
       isPopular: false,
       bestSeller: false,
@@ -190,13 +193,10 @@ export default function ProductFilter() {
       category: [],
     });
 
-    resetFilters();
-
     window.history.replaceState(null, "", `/product`);
     fetchProducts(1);
   };
 
-  // Sidebar UI
   const Card = ({
     children,
     className = "",
@@ -213,7 +213,6 @@ export default function ProductFilter() {
 
   const FilterSidebar = ({ isMobile = false }: { isMobile?: boolean }) => (
     <div className="space-y-4">
-      {/* Search Applied */}
       {search && (
         <Card>
           <div className="flex items-center justify-between">
@@ -262,17 +261,11 @@ export default function ProductFilter() {
                 <input
                   type="checkbox"
                   checked={(localFilters as any)[key]}
-                  onChange={() =>
-                    toggleLocalBoolean(key as any)
-                  }
+                  onChange={() => toggleLocalBoolean(key as any)}
                   className="hidden"
                 />
-                <PremiumCheckbox
-                  checked={(localFilters as any)[key]}
-                />
-                <span className="text-sm text-gray-700">
-                  {label}
-                </span>
+                <PremiumCheckbox checked={(localFilters as any)[key]} />
+                <span className="text-sm text-gray-700">{label}</span>
               </label>
             ))}
           </div>
@@ -294,16 +287,15 @@ export default function ProductFilter() {
 
         {isPriceOpen && (
           <div className="mt-4 space-y-4">
-
-            {/* Manual Inputs */}
+            {/* ⬇️ FIXED INPUTS — using refs (no value binding) */}
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="text-xs text-gray-500">Min</label>
                 <input
                   type="number"
                   placeholder="₹ 0"
-                  value={localFilters.minPrice}
-                  onChange={(e) => handleLocalMinPrice(e.target.value)}
+                  defaultValue={localFilters.minPrice}
+                  ref={minPriceRef}
                   className="w-full rounded-lg border border-gray-200 px-3 py-2 mt-1 focus:ring-2 focus:ring-green-100"
                 />
               </div>
@@ -313,16 +305,15 @@ export default function ProductFilter() {
                 <input
                   type="number"
                   placeholder="₹ 10000"
-                  value={localFilters.maxPrice}
-                  onChange={(e) => handleLocalMaxPrice(e.target.value)}
+                  defaultValue={localFilters.maxPrice}
+                  ref={maxPriceRef}
                   className="w-full rounded-lg border border-gray-200 px-3 py-2 mt-1 focus:ring-2 focus:ring-green-100"
                 />
               </div>
             </div>
 
-            {/* Quick Price Range Buttons */}
+            {/* Quick Price Buttons */}
             <div className="flex flex-wrap gap-2 pt-2">
-
               {[
                 { min: 0, max: 499, label: "Under ₹499" },
                 { min: 500, max: 999, label: "₹500 – ₹999" },
@@ -338,18 +329,21 @@ export default function ProductFilter() {
                   <button
                     key={i}
                     onClick={() => {
+                      if (minPriceRef.current)
+                        minPriceRef.current.value = String(range.min);
+                      if (maxPriceRef.current)
+                        maxPriceRef.current.value = String(range.max);
+
                       setLocalFilters((prev) => ({
                         ...prev,
                         minPrice: String(range.min),
                         maxPrice: String(range.max),
                       }));
                     }}
-                    className={`px-3 py-1.5 rounded-full text-xs border transition 
-                ${isSelected
-                        ? "bg-green-600 text-white border-green-600"
-                        : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200"
-                      }
-              `}
+                    className={`px-3 py-1.5 rounded-full text-xs border transition ${isSelected
+                      ? "bg-green-600 text-white border-green-600"
+                      : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200"
+                      }`}
                   >
                     {range.label}
                   </button>
@@ -359,7 +353,6 @@ export default function ProductFilter() {
           </div>
         )}
       </Card>
-
 
       {/* Categories */}
       <Card>
@@ -390,10 +383,7 @@ export default function ProductFilter() {
                 <PremiumCheckbox
                   checked={localFilters.category.includes(cat._id)}
                 />
-
-                <span className="text-sm text-gray-700">
-                  {cat.name}
-                </span>
+                <span className="text-sm text-gray-700">{cat.name}</span>
               </label>
             ))}
           </div>
@@ -404,13 +394,13 @@ export default function ProductFilter() {
         <div className="flex gap-3 mt-3">
           <button
             onClick={applyFilters}
-            className="flex-1 bg-green-600 text-white py-2 rounded-xl cursor-pointer focus:text-green-600 focus:bg-green-100 focus:border"
+            className="flex-1 bg-green-600 text-white py-2 rounded-xl cursor-pointer"
           >
             Apply
           </button>
           <button
             onClick={clearFilters}
-            className="px-4 py-2 border rounded-xl cursor-pointer focus:text-red-50 focus:bg-red-500 text-red-600 bg-red-50"
+            className="px-4 py-2 border rounded-xl cursor-pointer text-red-600 bg-red-50"
           >
             Clear
           </button>
@@ -419,7 +409,6 @@ export default function ProductFilter() {
     </div>
   );
 
-  // Pagination
   const goToPrev = () => {
     if (currentPage > 1) fetchProducts(currentPage - 1);
   };
@@ -428,11 +417,8 @@ export default function ProductFilter() {
     if (currentPage < totalPages) fetchProducts(currentPage + 1);
   };
 
-  // MAIN RENDER
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6">
-
-      {/* MOBILE FILTER BUTTON */}
       <div className="lg:hidden mb-4">
         <button
           onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
@@ -455,7 +441,6 @@ export default function ProductFilter() {
         </button>
       </div>
 
-      {/* MOBILE SIDEBAR */}
       {isMobileSidebarOpen && (
         <div
           className="lg:hidden fixed inset-0 bg-black/40 z-50"
@@ -495,15 +480,11 @@ export default function ProductFilter() {
         </div>
       )}
 
-      {/* MAIN CONTENT */}
       <div className="flex gap-6">
-
-        {/* DESKTOP SIDEBAR */}
         <aside className="hidden lg:block w-72">
           <FilterSidebar />
         </aside>
 
-        {/* PRODUCTS */}
         <div className="flex-1">
           {productLoading ? (
             <div className="flex justify-center py-16">
@@ -531,7 +512,6 @@ export default function ProductFilter() {
             </>
           )}
 
-          {/* PAGINATION */}
           {totalPages > 1 && (
             <div className="flex justify-center gap-3 my-10">
               <button
