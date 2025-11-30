@@ -11,6 +11,7 @@
   "dependencies": {
     "@vercel/og": "^0.8.5",
     "axios": "^1.13.2",
+    "embla-carousel-react": "^8.6.0",
     "lucide-react": "^0.553.0",
     "next": "16.0.1",
     "qs": "^6.14.0",

@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useProductStore } from "@/store/useProductStore";
 import { useWishlistStore } from "@/store/useWishlistStore";
 import AccordionGroup from "./AccordionGroup";
+import SuggestionCarousel from "./SuggestionCarousel";
 
 export default function ProductDetailPage({ slug }: { slug: string }) {
     const router = useRouter();
@@ -224,7 +225,7 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                             </div>
                             :
                             <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                                
+
                                 <p className="text-xs text-red-500">Product is not available.</p>
                             </div>
                         }
@@ -273,7 +274,7 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                     </div>
                 )}
 
-
+                <SuggestionCarousel slug={slug} />
             </div>
         </div >
     );

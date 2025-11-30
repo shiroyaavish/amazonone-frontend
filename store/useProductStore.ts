@@ -47,6 +47,9 @@ interface ProductStore {
   catgeoryError: string | null;
 
   products: Product[];
+  suggestions: Product[];
+  suggestionLoading: boolean,
+  suggestionError: string | null,
   listLoading: boolean;
   listError: string | null;
 
@@ -68,6 +71,7 @@ interface ProductStore {
   fetchProducts: (page?: number) => Promise<void>;
   fetchCategoriesData: () => Promise<void>;
   findOne: (slug: string) => Promise<void>;
+  getSuggestions: (slug: string) => Promise<void>;
   productVisit: (id: string) => Promise<void>;
 }
 
@@ -78,6 +82,9 @@ export const useProductStore = create<ProductStore>((set, get) => ({
   productError: null,
 
   products: [],
+  suggestions: [],
+  suggestionLoading: false,
+  suggestionError: null,
   listLoading: false,
   listError: null,
 
@@ -197,6 +204,21 @@ export const useProductStore = create<ProductStore>((set, get) => ({
       await apiHelpers.get(`/product/${id}/visit`)
     } catch (error) {
       console.error(error)
+    }
+  },
+  getSuggestions: async (slug: string) => {
+    try {
+      set({ suggestionLoading: true, suggestionError: null })
+      const data: any = await apiHelpers.get(`/product/${slug}/suggestion`)
+      set({
+        suggestions: data.data || [],
+        suggestionLoading: false
+      })
+    } catch (error: any) {
+      set({
+        suggestionError: error.message || "Failed to load suggestion",
+        suggestionLoading: false
+      })
     }
   }
 }));

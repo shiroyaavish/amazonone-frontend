@@ -45,7 +45,7 @@ export default function ProductCard({ product }: { product: Product }) {
                     <img
                         src={product.imageUrls?.[0]}
                         alt={product.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                     />
 
                     {/* Product Tag */}
