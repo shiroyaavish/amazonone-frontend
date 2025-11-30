@@ -70,6 +70,7 @@ export default function Footer() {
             <ul className="text-sm text-gray-600 space-y-2">
               <li><Link className="hover:text-black transition" href="/blog">Blogs</Link></li>
               <li><Link className="hover:text-black transition" href="/aboutus">About Us</Link></li>
+              <li><Link className="hover:text-black transition" href="/privacy-policy">Privacy Policy</Link></li>
             </ul>
           </div>
 
