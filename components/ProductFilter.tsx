@@ -21,6 +21,7 @@ export default function ProductFilter() {
     totalPages,
     currentPage,
     productLoading,
+    listLoading,
     isPopular,
     bestSeller,
     newRelease,
@@ -487,7 +488,7 @@ export default function ProductFilter() {
         </aside>
 
         <div className="flex-1">
-          {productLoading ? (
+          {listLoading ? (
             <div className="flex justify-center py-16">
               <Loader2 className="w-10 h-10 animate-spin text-green-600" />
             </div>
