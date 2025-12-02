@@ -43,14 +43,20 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap"
           rel="stylesheet"
         />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-16614757025"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', 'AW-16614757025');
-        </script>
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=AW-16614757025"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'AW-16614757025');
+            `,
+          }}
+        />
 
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8569782505338512"
           crossOrigin="anonymous"></script>
