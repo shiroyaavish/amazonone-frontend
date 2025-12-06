@@ -39,7 +39,7 @@ export default function Hero() {
       if (vid) {
         if (index === current) {
           vid.currentTime = 0;
-          vid.play().catch(() => {});
+          vid.play().catch(() => { });
         } else {
           vid.pause();
         }
@@ -87,13 +87,13 @@ export default function Hero() {
                 loop
                 playsInline
                 preload="auto"
-                className="w-full h-full object-contain bg-black rounded-2xl"
+                className="w-full h-full object-cover sm:object-contain bg-black rounded-2xl"
               />
             ) : (
               <img
                 src={banner.media}
                 alt={banner.title}
-                className="w-full h-full object-contain bg-black rounded-2xl"
+                className="w-full h-full object-cover xs:object-contain bg-black rounded-2xl"
               />
             )}
 
@@ -128,9 +128,8 @@ export default function Hero() {
           <button
             key={i}
             onClick={() => setCurrent(i)}
-            className={`w-3 h-3 rounded-full transition-all ${
-              current === i ? "bg-white" : "bg-gray-400/60"
-            }`}
+            className={`w-3 h-3 rounded-full transition-all ${current === i ? "bg-white" : "bg-gray-400/60"
+              }`}
           ></button>
         ))}
       </div>
