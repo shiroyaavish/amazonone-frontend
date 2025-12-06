@@ -509,7 +509,7 @@ export default function ProductFilter() {
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                 {products.map((p, i) => (
                   <>
-                    {(i + 1) % 15 == 0 && <AdBanner />}
+                    {(i + 1) % 15 == 0 && <AdBanner key={i}/>}
                     <ProductCard key={p._id} product={p} />
                   </>
                 ))}

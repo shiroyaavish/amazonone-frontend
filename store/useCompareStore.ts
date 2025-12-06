@@ -18,7 +18,7 @@ interface CompareStore {
 
 // ----------------- STORE -----------------
 export const useCompareStore = create<CompareStore>((set, get) => ({
-  products: [""],
+  products: [],
   resultHtml: "",
   loading: false,
   error: null,

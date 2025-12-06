@@ -1,8 +1,9 @@
 "use client"
 import Link from "next/link";
-import { Heart, Star } from "lucide-react";
+import { Heart, Star, Scale, Check } from "lucide-react";
 import { useWishlistStore } from "@/store/useWishlistStore";
 import { useProductStore } from "@/store/useProductStore";
+import { useCompareStore } from "@/store/useCompareStore";
 // import { useRouter } from "next/router";
 
 interface Product {
@@ -21,12 +22,26 @@ interface Product {
 export default function ProductCard({ product }: { product: Product }) {
     // const router = useRouter()
     const { wishlist, addToWishlist, removeFromWishlist } = useWishlistStore();
+    const { addProduct, products, removeProduct } = useCompareStore();
     const { productVisit } = useProductStore()
     const isLiked = wishlist.includes(product._id);
+    const isInCompare = products.includes(product.title);
+    const productIndex = products.indexOf(product.title);
+    const compareCount = products.length;
+    const canAddToCompare = compareCount < 4; // Limit to 4 products for comparison
 
     const handleToggle = (e: React.MouseEvent) => {
         e.preventDefault();
         isLiked ? removeFromWishlist(product._id) : addToWishlist(product._id);
+    };
+
+    const handleCompareToggle = (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (isInCompare) {
+            removeProduct(productIndex);
+        } else if (canAddToCompare) {
+            addProduct(product.title);
+        }
     };
 
     const discount = Math.round(
@@ -67,12 +82,38 @@ export default function ProductCard({ product }: { product: Product }) {
                         </div>
                     )}
 
-                    <button
-                        onClick={handleToggle}
-                        className="absolute top-2 right-2 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-md hover:scale-110 transition"
-                    >
-                        <Heart className={`w-4 h-4 ${isLiked ? "fill-red-500 text-red-500" : "text-gray-600"}`} />
-                    </button>
+                    {/* Compare Badge - Shows when product is in comparison */}
+                    {isInCompare && (
+                        <div className="absolute bottom-2 left-2 z-10">
+                            <span className="bg-blue-500 text-white text-[10px] font-semibold px-2 py-1 rounded-md shadow-md flex items-center gap-1">
+                                <Check className="w-3 h-3" />
+                                In Compare
+                            </span>
+                        </div>
+                    )}
+
+                    {/* Action Buttons */}
+                    <div className="absolute top-2 right-2 flex flex-col gap-2">
+                        <button
+                            onClick={handleToggle}
+                            className="w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-md hover:scale-110 transition"
+                            aria-label={isLiked ? "Remove from wishlist" : "Add to wishlist"}
+                        >
+                            <Heart className={`w-4 h-4 ${isLiked ? "fill-red-500 text-red-500" : "text-gray-600"}`} />
+                        </button>
+                        <button
+                            onClick={handleCompareToggle}
+                            disabled={!isInCompare && !canAddToCompare}
+                            className={`w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-md transition ${!isInCompare && !canAddToCompare
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : "hover:scale-110"
+                                }`}
+                            aria-label={isInCompare ? "Remove from compare" : "Add to compare"}
+                            title={!isInCompare && !canAddToCompare ? "Maximum 4 products can be compared" : ""}
+                        >
+                            <Scale className={`w-4 h-4 ${isInCompare ? "fill-blue-500 text-blue-500" : "text-gray-600"}`} />
+                        </button>
+                    </div>
                 </div>
 
                 <div className="p-3">

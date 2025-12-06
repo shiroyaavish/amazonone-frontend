@@ -1,6 +1,7 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import FloatingCompareButton from "@/components/FloatingCompareButton";
 import { ReactNode, Suspense } from "react";
 import { Metadata } from "next";
 
@@ -84,6 +85,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </Suspense>
         <main className="mx-auto px-2">{children}</main>
         <Footer />
+
+        {/* Floating Compare Button */}
+        <FloatingCompareButton />
       </body>
     </html>
   );
