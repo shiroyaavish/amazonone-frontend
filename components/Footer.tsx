@@ -110,6 +110,7 @@ export default function Footer() {
                 <input
                   type="text"
                   name="name"
+                  id="name"
                   placeholder="Your Name"
                   value={form.name}
                   onChange={handleChange}
@@ -120,6 +121,7 @@ export default function Footer() {
                 <input
                   type="email"
                   name="email"
+                  id="email"
                   placeholder="Your Email"
                   value={form.email}
                   onChange={handleChange}
@@ -129,6 +131,7 @@ export default function Footer() {
 
                 <textarea
                   name="message"
+                  id="message"
                   placeholder="Your Message"
                   value={form.message}
                   onChange={handleChange}

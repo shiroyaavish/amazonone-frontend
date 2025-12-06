@@ -71,7 +71,7 @@ export default function Navbar() {
       if (searchQuery.trim()) params.set("search", searchQuery.trim());
       else params.delete("search");
       router.push(`/product?${params.toString()}`);
-      setFilter("search",searchQuery.trim())
+      setFilter("search", searchQuery.trim())
       setMobileOpen(false);
       await fetchProducts(1)
     }
@@ -151,6 +151,8 @@ export default function Navbar() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
                   type="text"
+                  name="search"
+                  id="search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={handleSearchKey}
@@ -299,6 +301,8 @@ export default function Navbar() {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
+                name="search"
+                id="search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={handleSearchKey}
