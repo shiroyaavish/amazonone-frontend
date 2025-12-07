@@ -1,6 +1,7 @@
 "use client"
 import { useCompareStore } from "@/store/useCompareStore";
 import { X, Plus, ArrowRight, Loader2 } from 'lucide-react';
+import { useEffect } from "react";
 
 export default function ProductComparisonPage() {
   const {

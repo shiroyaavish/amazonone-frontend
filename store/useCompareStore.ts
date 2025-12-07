@@ -11,9 +11,11 @@ interface CompareStore {
   resultHtml: string;                  // API response HTML
   loading: boolean;
   error: string | null;
+  initialized: boolean;
 
   compareProducts: () => Promise<void>; // API CALL
   reset: () => void;
+  setInitialized: () => void;
 }
 
 // ----------------- STORE -----------------
@@ -22,7 +24,7 @@ export const useCompareStore = create<CompareStore>((set, get) => ({
   resultHtml: "",
   loading: false,
   error: null,
-
+  initialized: false,
   // Add textbox
   addProduct: (val = "") =>
     set((state) => ({ products: [...state.products, val] })),
@@ -76,11 +78,11 @@ export const useCompareStore = create<CompareStore>((set, get) => ({
       });
     }
   },
-
+  setInitialized: () => set({ initialized: true }),
   // Reset all states
   reset: () =>
     set({
-      products: [""],
+      products: [],
       resultHtml: "",
       loading: false,
       error: null,

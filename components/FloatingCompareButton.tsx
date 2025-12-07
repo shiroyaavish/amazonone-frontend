@@ -57,7 +57,7 @@ export default function FloatingCompareButton() {
                                     </p>
                                     <button
                                         onClick={() => removeProduct(index)}
-                                        className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-100 rounded transition"
+                                        className=" p-1 hover:bg-red-100 rounded transition"
                                     >
                                         <X className="w-3 h-3 text-red-500" />
                                     </button>

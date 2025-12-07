@@ -6,12 +6,11 @@ export default function AdBanner() {
     const customAds = [
         {
             link: "https://www.instagram.com/vensi_shiroya_12/p/DRleAtCjD4z/?hl=en",
-            image:
-                "https://scontent.cdninstagram.com/v/t51.82787-15/587606318_18045998276697710_1383631647273158589_n.webp?_nc_cat=104&ig_cache_key=Mzc3NTU1NTg1MjM3NjQ4OTUyMw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjg1OHgxMDgwLnNkci5DMyJ9&_nc_ohc=BfN6GMkBsGIQ7kNvwGG1hbQ&_nc_oc=AdnuHuMUBCHjMFgpe_IRO5_30Rp1W9MW7vlKpM_XPg2GpMVffgw5aLOIF9J9VsM31FeatEil_iZtif8nL9ubJIuK&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.cdninstagram.com&_nc_gid=4ttOIgHlIrZ0Cl-v7VteqA&oh=00_AfgTWeO5lrA_bz-JhxT4kAdlDZD-yUDIaoGwpM6evxgM4w&oe=69305AD1"
+            image:"/ad1.webp"
         },
         {
             link: "https://www.instagram.com/vensi_shiroya_12/?hl=en",
-            image: "https://scontent.cdninstagram.com/v/t51.82787-15/587579138_18045796529697710_4435856168917232166_n.webp?_nc_cat=104&ig_cache_key=Mzc3NDExNjUxMzExMzE4NDc5OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTA4MC5zZHIuQzIifQ%3D%3D&_nc_ohc=ndw_VDsYWhkQ7kNvwHriwzZ&_nc_oc=AdkqU6dq33OOvqoyVGNZiXR9kwKU3oSCL8I1bxapUHTQTVNw4nJz-32i-aJJR9Tia4th8bskV5GCpcE9ltk5ElNe&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.cdninstagram.com&_nc_gid=bWOwJn09wvrE22dqV5WooQ&oh=00_AfhcxXdyQeosdRKmffVcbaG7O93q96dGtWFhDmOVEOPKGg&oe=69305BAC"
+            image: "/ad2.webp"
         }
     ];
     const randomAd = customAds[Math.floor(Math.random() * customAds.length)];
