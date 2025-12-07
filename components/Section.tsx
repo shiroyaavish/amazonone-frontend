@@ -1,7 +1,7 @@
 import React from "react";
 import ProductCard from "./ProductCard";
 import Link from "next/link";
-import AdBanner from "./AddBanner";
+import AdBanner from "./AdBanner";
 
 interface Product {
   _id: string;

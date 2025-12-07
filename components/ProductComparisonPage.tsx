@@ -1,7 +1,8 @@
-"use client"
+"use client";
 import { useCompareStore } from "@/store/useCompareStore";
-import { X, Plus, ArrowRight, Loader2 } from 'lucide-react';
-import { useEffect } from "react";
+import { X, Plus, ArrowRight, Loader2 } from "lucide-react";
+import { useState } from "react";
+import AdBanner from "@/components/AdBanner";
 
 export default function ProductComparisonPage() {
   const {
@@ -15,140 +16,169 @@ export default function ProductComparisonPage() {
     compareProducts,
   } = useCompareStore();
 
-  const canCompare = products.filter(p => p.trim()).length >= 2;
+  const [showAd, setShowAd] = useState(false);
+  const canCompare = products.filter((p) => p.trim()).length >= 2;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100">
-      <div className="max-w-4xl mx-auto px-4 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      <div className="max-w-5xl mx-auto px-4 py-14">
+
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">
-            Compare Products
+        <div className="text-center mb-14">
+          <h1 className="text-4xl font-extrabold text-slate-900">
+            AI Product Comparison
           </h1>
-          <p className="text-slate-600">
-            Add products below and let AI analyze the differences
+          <p className="text-slate-600 mt-3 text-lg">
+            Compare multiple products instantly — specs, pros, cons & best choice.
           </p>
         </div>
 
+        {/* HOW TO USE TRACKER */}
+        <div className="grid sm:grid-cols-3 gap-4 mb-10 text-center">
+          <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+            <p className="text-slate-500 text-xs mb-2">STEP 1</p>
+            <p className="font-medium text-slate-800">Enter product names</p>
+          </div>
+          <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+            <p className="text-slate-500 text-xs mb-2">STEP 2</p>
+            <p className="font-medium text-slate-800">Click Compare</p>
+          </div>
+          <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+            <p className="text-slate-500 text-xs mb-2">STEP 3</p>
+            <p className="font-medium text-slate-800">
+              View detailed comparison table
+            </p>
+          </div>
+        </div>
+
         {/* Main Card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="p-8">
-            {/* Product Inputs */}
-            <div className="space-y-3 mb-6">
-              {products.map((val, index) => (
-                <div
-                  key={index}
-                  className="group relative flex items-center gap-3 transition-all"
-                >
-                  <div className="shrink-0 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-sm font-medium text-slate-600">
-                    {index + 1}
-                  </div>
+        <div className="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden p-8">
 
-                  <input
-                    type="text"
-                    value={val}
-                    onChange={(e) => updateProduct(index, e.target.value)}
-                    placeholder={`Enter product ${index + 1} name`}
-                    className="flex-1 px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-slate-900 placeholder:text-slate-400"
-                  />
-
-                  {products.length > 2 && (
-                    <button
-                      onClick={() => removeProduct(index)}
-                      className="shrink-0 w-8 h-8 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-500 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100"
-                      aria-label="Remove product"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Add Product Button */}
-            {products.length < 5 && (
-              <button
-                onClick={(e) => addProduct("")}
-                className="w-full py-2.5 border-2 border-dashed border-slate-200 rounded-xl text-slate-600 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50/50 transition-all flex items-center justify-center gap-2 text-sm font-medium"
+          {/* Product Inputs */}
+          <div className="space-y-4 mb-8">
+            {products.map((val, index) => (
+              <div
+                key={index}
+                className="relative group flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white focus-within:ring-2 focus-within:ring-blue-500 transition-all px-4 py-3"
               >
-                <Plus className="w-4 h-4" />
-                Add another product
-              </button>
-            )}
-
-            {/* Error Message */}
-            {error && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-700 text-sm">{error}</p>
-              </div>
-            )}
-
-            {/* Compare Button */}
-            <div className="mt-8 pt-6 border-t border-slate-200">
-              <button
-                onClick={compareProducts}
-                disabled={loading || !canCompare}
-                className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-xl font-medium transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md disabled:shadow-none"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Analyzing...
-                  </>
-                ) : (
-                  <>
-                    Compare Products
-                    <ArrowRight className="w-4 h-4" />
-                  </>
+                <span className="font-semibold text-slate-600">{index + 1}.</span>
+                <input
+                  type="text"
+                  value={val}
+                  onChange={(e) => updateProduct(index, e.target.value)}
+                  placeholder={`Enter product name ${index + 1}`}
+                  className="flex-1 bg-transparent outline-none text-slate-900 placeholder:text-slate-400"
+                />
+                {products.length > 2 && (
+                  <button
+                    onClick={() => removeProduct(index)}
+                    className="text-slate-400 hover:text-red-500 transition"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
                 )}
-              </button>
-
-              {!canCompare && !loading && (
-                <p className="text-center text-sm text-slate-500 mt-2">
-                  Add at least 2 products to compare
-                </p>
-              )}
-            </div>
+              </div>
+            ))}
           </div>
 
-          {/* Results Section */}
-          {resultHtml && (
-            <div className="border-t border-slate-200 bg-slate-50/50">
-              <div className="p-8">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-1 h-6 bg-blue-600 rounded-full"></div>
-                  <h2 className="text-xl font-semibold text-slate-900">
-                    Comparison Results
-                  </h2>
-                </div>
+          {/* Add Product Button */}
+          {products.length < 5 && (
+            <button
+              onClick={() => addProduct("")}
+              className="w-full py-2.5 border border-slate-300 rounded-xl text-slate-600 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition font-medium flex items-center justify-center gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              Add product
+            </button>
+          )}
 
-                {/* Scrollable container */}
-                <div className="prose prose-slate max-w-none prose-headings:text-slate-900 prose-p:text-slate-700 overflow-scroll">
-                  <div
-                    className="
-            overflow-auto
-            max-h-[500px]
-            border border-slate-300
-            rounded-lg
-            shadow-sm
-            [&_table]:w-full
-            [&_th]:bg-slate-100
-            [&_td]:p-3
-            [&_th]:p-3
-            [&_tr:nth-child(even)_td]:bg-slate-50
-          "
-                    dangerouslySetInnerHTML={{ __html: resultHtml }}
-                  />
-                </div>
-              </div>
+          {/* Error */}
+          {error && (
+            <div className="mt-4 bg-red-50 text-red-700 border border-red-200 p-3 text-sm rounded-lg">
+              {error}
             </div>
           )}
 
+          {/* Compare Button */}
+          <div className="mt-10">
+            <button
+              onClick={() => {
+                setShowAd(true);
+                compareProducts();
+              }}
+              disabled={loading || !canCompare}
+              className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white text-lg font-semibold rounded-xl flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Comparing...
+                </>
+              ) : (
+                <>
+                  Compare Products
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
+            </button>
+
+            {!canCompare && !loading && (
+              <p className="text-center text-sm text-slate-500 mt-2">
+                You must enter at least 2 products
+              </p>
+            )}
+          </div>
+
+          {/* Google Ad */}
+          {showAd && (
+            <div className="mt-6">
+              <AdBanner />
+            </div>
+          )}
         </div>
 
-        {/* Footer Note */}
-        <p className="text-center text-sm text-slate-500 mt-6">
-          Powered by AI • Results may vary based on available data
+        {/* Results */}
+        {resultHtml && (
+          <div className="mt-10 bg-white rounded-2xl shadow-md border border-slate-200 p-8">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+              🔍 Comparison Results
+            </h2>
+
+            <div className="overflow-auto max-h-[550px] border border-slate-300 rounded-lg bg-white shadow-inner p-2">
+              <div
+                className="prose prose-slate max-w-none [&_table]:w-full [&_th]:bg-slate-100 [&_td]:p-3 [&_th]:p-3 [&_tr:nth-child(even)_td]:bg-slate-50"
+                dangerouslySetInnerHTML={{ __html: resultHtml }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* SEO Section */}
+        <div className="mt-16 bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+          <h2 className="text-2xl font-bold text-slate-900 mb-4">How this tool works</h2>
+          <p className="text-slate-700 leading-relaxed mb-4">
+            This AI Product Comparison Tool helps you compare two or more products
+            instantly. Simply enter the names of the items and our AI analyzes
+            available specifications, features, performance scores, reviews, pros
+            and cons — then recommends the best option for you.
+          </p>
+
+          <h3 className="text-xl font-semibold text-slate-900 mb-3">
+            Perfect for comparing:
+          </h3>
+          <div className="grid sm:grid-cols-2 gap-2 text-slate-700">
+            <p>• Smartphones / iPhones</p>
+            <p>• Laptops / Tablets / PC</p>
+            <p>• Earbuds / Headphones / Speakers</p>
+            <p>• Smartwatches / Fitness Bands</p>
+            <p>• TVs / Cameras / Gaming devices</p>
+            <p>• Home & kitchen appliances</p>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <p className="text-center text-sm text-slate-500 mt-10">
+          🚀 Powered by AI — Comparison accuracy may vary based on data availability
         </p>
       </div>
     </div>

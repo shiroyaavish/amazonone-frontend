@@ -11,7 +11,7 @@ import {
 import ProductCard from "@/components/ProductCard";
 import { useProductStore } from "@/store/useProductStore";
 import { useSearchParams } from "next/navigation";
-import AdBanner from "./AddBanner";
+import AdBanner from "./AdBanner";
 
 export default function ProductFilter() {
   const searchParams = useSearchParams();
