@@ -20,7 +20,7 @@ export default function ProductComparisonPage() {
   const canCompare = products.filter((p) => p.trim()).length >= 2;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100">
       <div className="max-w-5xl mx-auto px-4 py-14">
 
         {/* Header */}

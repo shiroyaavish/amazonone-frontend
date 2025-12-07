@@ -52,7 +52,7 @@ export default function Hero() {
       window.open(url, "_blank");
       return;
     }
-    router.push(`/product/${url}`);
+    router.push(url);
   };
 
   if (loading)
@@ -87,13 +87,13 @@ export default function Hero() {
                 loop
                 playsInline
                 preload="auto"
-                className="w-full h-full object-cover sm:object-contain bg-black rounded-2xl"
+                className="w-full h-full object-fill sm:object-contain bg-black rounded-2xl"
               />
             ) : (
               <img
                 src={banner.media}
                 alt={banner.title}
-                className="w-full h-full object-cover xs:object-contain bg-black rounded-2xl"
+                className="w-full h-full object-fill xs:object-contain bg-black rounded-2xl"
               />
             )}
 

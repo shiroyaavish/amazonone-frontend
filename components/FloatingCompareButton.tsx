@@ -50,7 +50,7 @@ export default function FloatingCompareButton() {
                             {products.map((productTitle, index) => (
                                 <div
                                     key={index}
-                                    className="flex items-center justify-between gap-2 p-2 hover:bg-gray-50 rounded transition group"
+                                    className="flex items-center justify-between gap-2 p-2 bg-gray-50 rounded transition group"
                                 >
                                     <p className="text-xs text-gray-700 line-clamp-1 flex-1">
                                         {productTitle}
