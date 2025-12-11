@@ -2,207 +2,208 @@ export default function PrivacyPolicyPage() {
   return (
     <main className="max-w-3xl mx-auto px-4 py-10 text-sm leading-relaxed">
       <h1 className="text-3xl font-semibold mb-6">Privacy Policy</h1>
+
       <p className="mb-4 text-gray-700">
         Last updated: {new Date().toLocaleDateString("en-IN")}
       </p>
 
       <p className="mb-4">
-        This Privacy Policy describes how <strong>DealMitra</strong> ("we",
-        "us", or "our") collects, uses, and shares information about you when
-        you use our website <strong>dealmitra.online</strong> (the "Site").
+        At <strong>DealMitra</strong>, your privacy matters to us. This Privacy
+        Policy explains what information we collect, how we use it, and what
+        choices you have while using our website{" "}
+        <strong>dealmitra.online</strong>.
       </p>
 
       <p className="mb-4">
-        By accessing or using the Site, you agree to the collection and use of
-        information in accordance with this Privacy Policy. If you do not agree,
-        please do not use the Site.
+        By using our website, you agree to the practices described in this
+        policy. If you do not agree with anything mentioned here, please avoid
+        using the Site.
       </p>
 
+      {/* SECTION 1 */}
       <h2 className="text-xl font-semibold mt-8 mb-3">
         1. Information We Collect
       </h2>
 
-      <h3 className="text-lg font-semibold mt-4 mb-2">1.1 Information you provide to us</h3>
+      <h3 className="text-lg font-semibold mt-4 mb-2">
+        1.1 Information you choose to share
+      </h3>
       <p className="mb-3">
-        We may collect information that you voluntarily provide when you:
+        We may collect information directly from you when you:
       </p>
       <ul className="list-disc ml-6 mb-4 space-y-1">
-        <li>Contact us via email or forms on the Site</li>
-        <li>Subscribe to newsletters or deal alerts</li>
-        <li>Create an account (if applicable)</li>
+        <li>Contact us through email or forms</li>
+        <li>Subscribe to newsletters or alerts</li>
+        <li>Create an account (if this feature is available)</li>
       </ul>
       <p className="mb-4">
-        This may include your name, email address, and any other information you
-        choose to provide.
+        This can include details like your name, email address, or anything else
+        you voluntarily provide.
       </p>
 
-      <h3 className="text-lg font-semibold mt-4 mb-2">1.2 Automatically collected information</h3>
+      <h3 className="text-lg font-semibold mt-4 mb-2">
+        1.2 Information collected automatically
+      </h3>
       <p className="mb-3">
-        When you visit the Site, we automatically collect certain information,
-        including:
+        When you browse our website, some information is collected automatically
+        to help us improve your experience, such as:
       </p>
       <ul className="list-disc ml-6 mb-4 space-y-1">
-        <li>IP address</li>
-        <li>Browser type and version</li>
+        <li>Your IP address</li>
+        <li>Browser version and device type</li>
         <li>Pages you visit and time spent on them</li>
-        <li>Referring URLs and general location (city/country level)</li>
-        <li>Device information (such as device type and operating system)</li>
+        <li>General location (city/country level)</li>
+        <li>Operating system and device details</li>
       </ul>
       <p className="mb-4">
-        This information is used for analytics, improving our services, and
-        protecting the Site from abuse.
+        This data helps us understand how visitors use our site and protect the
+        platform from misuse.
       </p>
 
-      <h3 className="text-lg font-semibold mt-4 mb-2">1.3 Cookies and similar technologies</h3>
+      <h3 className="text-lg font-semibold mt-4 mb-2">
+        1.3 Cookies and tracking technologies
+      </h3>
       <p className="mb-3">
-        We use cookies and similar tracking technologies to:
+        We use cookies and similar technologies to make your browsing
+        experience smoother. Cookies help us:
       </p>
       <ul className="list-disc ml-6 mb-4 space-y-1">
         <li>Remember your preferences</li>
-        <li>Understand how users interact with our Site</li>
-        <li>Display personalized advertisements (through third-party partners like Google)</li>
+        <li>Analyse how people use our website</li>
+        <li>Show more relevant advertisements</li>
       </ul>
       <p className="mb-4">
-        You can control cookies through your browser settings. Disabling cookies
-        may affect some features of the Site.
+        If you prefer, you can disable cookies in your browser. However, some
+        parts of the site may not work as expected.
       </p>
 
+      {/* SECTION 2 */}
       <h2 className="text-xl font-semibold mt-8 mb-3">
-        2. Use of Your Information
+        2. How We Use Your Information
       </h2>
-      <p className="mb-4">We may use the information we collect to:</p>
+      <p className="mb-4">We use the information we collect to:</p>
       <ul className="list-disc ml-6 mb-4 space-y-1">
-        <li>Operate, maintain, and improve the Site and our services</li>
-        <li>Show you relevant deals, offers, and content</li>
-        <li>Send you newsletters, updates, or promotional messages (if you opt in)</li>
-        <li>Respond to your inquiries and provide support</li>
-        <li>Monitor usage, detect fraud, and enhance security</li>
-        <li>Comply with legal obligations</li>
+        <li>Improve the website and user experience</li>
+        <li>Show deals and content that match your interests</li>
+        <li>Send newsletters or updates (only if you subscribe)</li>
+        <li>Respond to your questions and support requests</li>
+        <li>Monitor activity to detect fraud or misuse</li>
+        <li>Comply with legal requirements</li>
       </ul>
 
+      {/* SECTION 3 */}
       <h2 className="text-xl font-semibold mt-8 mb-3">
         3. Google AdSense and Advertising
       </h2>
       <p className="mb-4">
-        We use third-party advertising partners such as Google AdSense to serve
-        ads when you visit our Site. These partners may use cookies and similar
-        technologies to:
+        We work with third-party advertising services like Google AdSense. These
+        services may use cookies and similar tools to:
       </p>
       <ul className="list-disc ml-6 mb-4 space-y-1">
-        <li>Serve ads based on your visits to this and other websites</li>
-        <li>Measure ad performance and prevent fraud</li>
-        <li>Personalize advertising content</li>
+        <li>Show ads based on your browsing activity</li>
+        <li>Measure how ads perform</li>
+        <li>Reduce spam and fraudulent clicks</li>
+        <li>Personalize the ads you see across the internet</li>
       </ul>
+
       <p className="mb-4">
-        Google&apos;s use of advertising cookies enables it and its partners to
-        serve ads to you based on your visit to our Site and/or other sites on
-        the internet. You may opt out of personalized advertising by visiting
-        Google&apos;s Ads Settings.
+        You can manage or turn off personalized advertising by visiting Google’s
+        Ads Settings page.
       </p>
-      <p className="mb-4">
-        For more information on how Google uses data, please see:
-      </p>
+
+      <p className="mb-4">More information is available here:</p>
+
       <pre className="bg-gray-100 p-3 rounded text-xs overflow-x-auto mb-4">
-https://policies.google.com/technologies/ads
+        https://policies.google.com/technologies/ads
       </pre>
 
+      {/* SECTION 4 */}
       <h2 className="text-xl font-semibold mt-8 mb-3">
-        4. Third-Party Links
+        4. Links to Other Websites
       </h2>
       <p className="mb-4">
-        Our Site may contain links to third-party websites, offers, or services.
-        We are not responsible for the content, privacy policies, or practices
-        of these third-party sites. We encourage you to review the privacy
-        policy of any site you visit via our links.
+        Our website may include links to external sites. We do not control or
+        take responsibility for their content or privacy practices. We recommend
+        reviewing their privacy policies before sharing any information.
       </p>
 
+      {/* SECTION 5 */}
       <h2 className="text-xl font-semibold mt-8 mb-3">
-        5. Data Sharing and Disclosure
+        5. When We Share Your Information
       </h2>
-      <p className="mb-3">
-        We do not sell your personal information. We may share information in
-        the following situations:
-      </p>
+      <p className="mb-3">We do not sell your personal information. However, we may share it:</p>
       <ul className="list-disc ml-6 mb-4 space-y-1">
         <li>
-          <strong>Service providers:</strong> With third-party vendors who help
-          us operate the Site (analytics, hosting, email services, etc.).
+          <strong>With service providers</strong> that help us run our website
+          (analytics, hosting, email tools, etc.)
         </li>
         <li>
-          <strong>Legal requirements:</strong> When required to do so by law or
-          in response to valid requests by public authorities.
+          <strong>If required by law</strong> or to respond to legal requests
         </li>
         <li>
-          <strong>Business transfers:</strong> In connection with a merger,
-          sale, or other transfer of all or part of our business.
+          <strong>During a business transfer</strong> like a merger or sale of
+          assets
         </li>
       </ul>
 
-      <h2 className="text-xl font-semibold mt-8 mb-3">
-        6. Data Retention
-      </h2>
+      {/* SECTION 6 */}
+      <h2 className="text-xl font-semibold mt-8 mb-3">6. How Long We Keep Data</h2>
       <p className="mb-4">
-        We retain your information for as long as necessary to fulfill the
-        purposes described in this Privacy Policy, unless a longer retention
-        period is required or permitted by law.
+        We keep your information only for as long as necessary for the purposes
+        outlined in this policy or as required by law.
       </p>
 
+      {/* SECTION 7 */}
       <h2 className="text-xl font-semibold mt-8 mb-3">
         7. Your Rights and Choices
       </h2>
-      <p className="mb-4">
-        Depending on your location, you may have certain rights regarding your
-        personal information, such as:
-      </p>
+      <p className="mb-4">Depending on your region, you may be able to:</p>
       <ul className="list-disc ml-6 mb-4 space-y-1">
-        <li>Accessing the personal data we hold about you</li>
-        <li>Requesting correction or deletion of your data</li>
-        <li>Objecting to or restricting certain processing</li>
-        <li>Withdrawing consent where processing is based on consent</li>
+        <li>Request access to the information we store about you</li>
+        <li>Ask for corrections or deletion of your data</li>
+        <li>Limit or object to certain types of data processing</li>
+        <li>Withdraw consent for communications</li>
       </ul>
       <p className="mb-4">
-        To exercise these rights, you can contact us using the details provided
-        in the <strong>Contact Us</strong> section below. We may ask you to
-        verify your identity before fulfilling your request.
+        To use any of these rights, simply contact us using the details in the
+        section below.
       </p>
 
+      {/* SECTION 8 */}
       <h2 className="text-xl font-semibold mt-8 mb-3">
-        8. Children&apos;s Privacy
+        8. Children’s Privacy
       </h2>
       <p className="mb-4">
-        Our Site is not directed to children under the age of 13, and we do not
-        knowingly collect personal information from children. If you believe
-        that a child has provided us with personal information, please contact
-        us so that we can delete it.
+        DealMitra is not meant for children under 13. We do not knowingly
+        collect personal information from young children. If you believe a child
+        has shared data with us, please reach out so we can remove it.
       </p>
 
+      {/* SECTION 9 */}
+      <h2 className="text-xl font-semibold mt-8 mb-3">9. Security Measures</h2>
+      <p className="mb-4">
+        We use reasonable security practices to protect your information.
+        However, no online platform is completely risk-free, and we cannot
+        guarantee absolute security.
+      </p>
+
+      {/* SECTION 10 */}
       <h2 className="text-xl font-semibold mt-8 mb-3">
-        9. Security
+        10. Updates to This Privacy Policy
       </h2>
       <p className="mb-4">
-        We use reasonable technical and organizational measures to protect your
-        information. However, no method of transmission over the internet or
-        method of electronic storage is 100% secure, and we cannot guarantee
-        absolute security.
+        We may update this policy from time to time. When we do, we will post
+        the latest version here with the updated date. Continuing to use the
+        Site means you accept the updated terms.
       </p>
 
-      <h2 className="text-xl font-semibold mt-8 mb-3">
-        10. Changes to This Privacy Policy
-      </h2>
-      <p className="mb-4">
-        We may update this Privacy Policy from time to time. Any changes will be
-        posted on this page with an updated "Last updated" date. Continued use
-        of the Site after such changes constitutes your acceptance of the
-        revised policy.
-      </p>
-
-      <h2 className="text-xl font-semibold mt-8 mb-3">
-        11. Contact Us
-      </h2>
+      {/* SECTION 11 */}
+      <h2 className="text-xl font-semibold mt-8 mb-3">11. Contact Us</h2>
       <p className="mb-1">
-        If you have any questions about this Privacy Policy, you can contact us
-        at:
+        If you have questions, concerns, or feedback about this Privacy Policy,
+        feel free to contact us:
       </p>
+
       <p className="mb-4">
         <strong>Email:</strong> dealmitra1111@gmail.com
       </p>

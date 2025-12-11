@@ -8,7 +8,7 @@ export default function AccordionGroup({
   title: string;
   details: { key: string; value: string }[];
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   return (
     <div className="bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
       {/* Header */}
