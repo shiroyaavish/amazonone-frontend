@@ -92,7 +92,31 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <meta name="google-adsense-account" content="ca-pub-8569782505338512"></meta>
         <script async custom-element="amp-ad" src="https://cdn.ampproject.org/v0/amp-ad-0.1.js"></script>
         <meta name="google-site-verification" content="7KKI_7V1_ER8U4BCRYDtWTzR542aWACXMSueVhn5e5k" />
+        <script async src="https://fundingchoicesmessages.google.com/i/pub-8569782505338512?ers=1"></script>
 
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+                        (function() {
+                          function signalGooglefcPresent() {
+                            if (!window.frames['googlefcPresent']) {
+                              if (document.body) {
+                                const iframe = document.createElement('iframe');
+                                iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;';
+                                iframe.style.display = 'none';
+                                iframe.name = 'googlefcPresent';
+                                document.body.appendChild(iframe);
+                              } else {
+                                setTimeout(signalGooglefcPresent, 0);
+                              }
+                            }
+                          }
+                          signalGooglefcPresent();
+                        })();
+                        `,
+          }}
+        />
+        
         {/* Enhanced Schema for Product Comparison Tool */}
         <script
           type="application/ld+json"
