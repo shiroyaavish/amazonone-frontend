@@ -81,7 +81,13 @@ export default function BlogDetailsPage({ slug }: { slug: string }) {
                     </span>
                 ))}
             </div>
-
+            <section className="prose prose-lg max-w-none mt-12 blog-content">
+                <div
+                    dangerouslySetInnerHTML={{
+                        __html: blog.content || ""
+                    }}
+                />
+            </section>
             {/* Product Section */}
             {blog.productIds?.length > 0 && (
                 <section className="mt-16">
