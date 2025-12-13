@@ -52,19 +52,19 @@ export const useHomeStore = create<HomeState>((set) => ({
 
       const popularReq = apiHelpers.get("/product", {
         page: 1,
-        limit: 10,
+        limit: 6,
         isPopular: true,
       });
 
       const newReq = apiHelpers.get("/product", {
         page: 1,
-        limit: 10,
+        limit: 6,
         newRelease: true,
       });
 
       const bestReq = apiHelpers.get("/product", {
         page: 1,
-        limit: 10,
+        limit: 6,
         bestSeller: true,
       });
 

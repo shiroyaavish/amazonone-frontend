@@ -71,6 +71,7 @@ export default function Footer() {
               <li><Link className="hover:text-black transition" href="/blog">Blogs</Link></li>
               <li><Link className="hover:text-black transition" href="/aboutus">About Us</Link></li>
               <li><Link className="hover:text-black transition" href="/privacy-policy">Privacy Policy</Link></li>
+              <li><Link className="hover:text-black transition" href="/how-it-works">How to Use DealMitra</Link></li>
             </ul>
           </div>
 
@@ -153,7 +154,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-14 text-center text-sm text-gray-400 border-t pt-6">
-          © {new Date().getFullYear()} amazonone. All rights reserved.
+          © {new Date().getFullYear()} DealMitra.online. All rights reserved.
         </div>
       </div>
     </footer>

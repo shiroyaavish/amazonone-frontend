@@ -1,11 +1,13 @@
 "use client";
 
 import { useCompareStore } from "@/store/useCompareStore";
-import { X, Plus, ArrowRight, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { X, Plus, ArrowRight, Loader2, Search } from "lucide-react";
+import { use, useState } from "react";
 import AdBanner from "@/components/AdBanner";
+import { useRouter } from "next/navigation";
 
 export default function ProductComparisonPage() {
+  const router = useRouter();
   const {
     products,
     updateProduct,
@@ -16,7 +18,6 @@ export default function ProductComparisonPage() {
     error,
     compareProducts,
   } = useCompareStore();
-
   const [showAd, setShowAd] = useState(false);
   const canCompare = products.filter((p) => p.trim()).length >= 2;
 
@@ -37,23 +38,7 @@ export default function ProductComparisonPage() {
           </p>
         </div>
 
-        {/* ================= HOW TO USE ================= */}
-        <div className="grid sm:grid-cols-3 gap-4 mb-14 text-center">
-          {[
-            { step: "STEP 1", title: "Enter product names", desc: "Example: iPhone 15, Samsung S23" },
-            { step: "STEP 2", title: "Click Compare", desc: "AI starts analysing instantly" },
-            { step: "STEP 3", title: "View detailed results", desc: "Table, pros, cons & verdict" },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="bg-white border border-slate-200 rounded-xl p-5 shadow hover:shadow-md transition"
-            >
-              <p className="text-slate-500 text-xs mb-1">{item.step}</p>
-              <p className="font-semibold text-slate-800">{item.title}</p>
-              <p className="text-xs text-slate-500 mt-1">{item.desc}</p>
-            </div>
-          ))}
-        </div>
+
 
         {/* ================= MAIN INPUT CARD ================= */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
@@ -95,16 +80,31 @@ export default function ProductComparisonPage() {
 
           {/* Add More Button */}
           {products.length < 5 && (
-            <button
-              onClick={() => addProduct("")}
-              className="w-full py-2.5 border border-slate-300 rounded-xl 
-              text-slate-600 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 
-              transition font-medium flex items-center justify-center gap-2"
-            >
-              <Plus className="w-4 h-4" />
-              Add another product
-            </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {/* Add Product */}
+              <button
+                onClick={() => addProduct("")}
+                className="w-full py-2.5 border border-slate-300 rounded-xl 
+      text-slate-600 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 
+      transition font-medium flex items-center justify-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Add product
+              </button>
+
+              {/* Search Product */}
+              <button
+                onClick={() => router.push("/product")}
+                className="w-full py-2.5 border border-slate-300 rounded-xl 
+      text-slate-600 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 
+      transition font-medium flex items-center justify-center gap-2"
+              >
+                <Search className="w-4 h-4" />
+                Search product
+              </button>
+            </div>
           )}
+
 
           {/* Error Message */}
           {error && (
@@ -151,6 +151,24 @@ export default function ProductComparisonPage() {
               <AdBanner />
             </div>
           )}
+        </div>
+
+        {/* ================= HOW TO USE ================= */}
+        <div className="grid sm:grid-cols-3 gap-4 mt-14 text-center">
+          {[
+            { step: "STEP 1", title: "Enter product names", desc: "Example: iPhone 15, Samsung S23" },
+            { step: "STEP 2", title: "Click Compare", desc: "AI starts analysing instantly" },
+            { step: "STEP 3", title: "View detailed results", desc: "Table, pros, cons & verdict" },
+          ].map((item, i) => (
+            <div
+              key={i}
+              className="bg-white border border-slate-200 rounded-xl p-5 shadow hover:shadow-md transition"
+            >
+              <p className="text-slate-500 text-xs mb-1">{item.step}</p>
+              <p className="font-semibold text-slate-800">{item.title}</p>
+              <p className="text-xs text-slate-500 mt-1">{item.desc}</p>
+            </div>
+          ))}
         </div>
 
         {/* ================= RESULTS SECTION ================= */}

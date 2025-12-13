@@ -5,6 +5,7 @@ import Hero from "@/components/Hero";
 import Section from "@/components/Section";
 import CategorySection from "@/components/CategorySection";
 import { useHomeStore } from "@/store/useHomeStore";
+import HomeBanner from "@/components/HomeBanner";
 
 export default function Home() {
 
@@ -39,7 +40,8 @@ export default function Home() {
 
   return (
     <>
-      <Hero />
+      {/* <Hero /> */}
+      <HomeBanner />
       <Section title="Popular Products" products={popular.slice(0, 6)} id="popular_products" />
       <Section title="New Releases" products={newRelease.slice(0, 6)} id="new_release" />
       <Section title="Best Sellers" products={bestSeller.slice(0, 6)} id="best_seller" />
