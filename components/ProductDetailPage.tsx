@@ -123,44 +123,61 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                                 alt={product.title}
                                 className="w-full h-full object-contain"
                             />
-
                             {discount > 0 && product.availability && (
                                 <div className="absolute top-3 left-3">
                                     <span className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
-                                        {discount}% OFF
+                                        {product.availability ? `${discount} % OFF` : "Unavailable"}
                                     </span>
                                 </div>
                             )}
-
+                            {!product.availability && (
+                                <div className="absolute top-3 left-3">
+                                    <span className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
+                                        Unavailable
+                                    </span>
+                                </div>
+                            )}
                             {product.imageUrls.length > 1 && (
                                 <>
                                     <button
                                         onClick={() =>
                                             setSelectedImage((prev) =>
-                                                prev === 0
-                                                    ? product.imageUrls.length - 1
-                                                    : prev - 1
+                                                prev === 0 ? product.imageUrls.length - 1 : prev - 1
                                             )
                                         }
-                                        className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow"
+                                        className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow hover:bg-gray-50"
                                     >
                                         <ChevronLeft className="w-4 h-4" />
                                     </button>
                                     <button
                                         onClick={() =>
-                                            setSelectedImage(
-                                                (prev) =>
-                                                    (prev + 1) %
-                                                    product.imageUrls.length
-                                            )
+                                            setSelectedImage((prev) => (prev + 1) % product.imageUrls.length)
                                         }
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow"
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow hover:bg-gray-50"
                                     >
                                         <ChevronRight className="w-4 h-4" />
                                     </button>
                                 </>
                             )}
                         </div>
+
+                        {/* Thumbnails */}
+                        {product.imageUrls.length > 1 && (
+                            <div className="flex gap-2">
+                                {product.imageUrls.map((img, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => setSelectedImage(idx)}
+                                        className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 transition ${selectedImage === idx
+                                            ? "border-green-600"
+                                            : "border-gray-200 hover:border-gray-300"
+                                            }`}
+                                    >
+                                        <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-contain" />
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* 🧾 Details */}
@@ -176,8 +193,8 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                                 >
                                     <Heart
                                         className={`w-4 h-4 ${isLiked
-                                                ? "fill-red-500 text-red-500"
-                                                : "text-gray-500"
+                                            ? "fill-red-500 text-red-500"
+                                            : "text-gray-500"
                                             }`}
                                     />
                                 </button>
@@ -200,9 +217,9 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                                 <Star
                                     key={i}
                                     className={`w-4 h-4 ${i <
-                                            Math.round(product.rating.average)
-                                            ? "fill-yellow-400 text-yellow-400"
-                                            : "fill-gray-200 text-gray-200"
+                                        Math.round(product.rating.average)
+                                        ? "fill-yellow-400 text-yellow-400"
+                                        : "fill-gray-200 text-gray-200"
                                         }`}
                                 />
                             ))}
@@ -273,8 +290,32 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                                 </p>
                             )}
                         </div>
+                        <h2 className="text-sm font-semibold text-gray-900 mb-3">Key Features</h2>
+                        <div className="space-y-2.5">
+                            {product.features.map((feature, idx) => (
+                                <div key={idx} className="flex items-start gap-2">
+                                    <Check className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
+                                    <span className="text-sm text-gray-600 leading-relaxed">{feature}</span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
+                {product.specifications?.length ? (
+                    <div className="mt-12 border-t pt-8">
+                        <h2 className="text-xl font-semibold text-gray-900 mb-6">Specifications</h2>
+
+                        <div className="space-y-4">
+                            {product.specifications.map((specGroup, groupIdx) => (
+                                <AccordionGroup key={groupIdx} title={specGroup.key} details={specGroup.details} />
+                            ))}
+                        </div>
+                    </div>
+                ) : (
+                    <div className="mt-12 border-t pt-8 text-center text-gray-500">
+                        No specifications available
+                    </div>
+                )}
 
                 <SuggestionCarousel slug={slug} />
             </div>
