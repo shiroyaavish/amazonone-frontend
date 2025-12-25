@@ -509,7 +509,7 @@ export default function ProductFilter() {
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                 {products.map((p, i) => (
                   <>
-                    {(i + 1) % 15 == 0 && <AdBanner key={i}/>}
+                    {(i + 1) % 15 == 0 && <AdBanner key={i} />}
                     <ProductCard key={p._id} product={p} />
                   </>
                 ))}
@@ -518,34 +518,95 @@ export default function ProductFilter() {
           )}
 
           {totalPages > 1 && (
-            <div className="flex justify-center gap-3 my-10">
-              <button
-                disabled={currentPage === 1}
-                onClick={goToPrev}
-                className={`px-5 py-2.5 rounded-lg border font-medium ${currentPage === 1
-                  ? "border-gray-300 text-gray-400 cursor-not-allowed"
-                  : "border-green-600 text-green-600 hover:bg-green-50"
-                  }`}
-              >
-                Previous
-              </button>
+            <div className="my-12 flex flex-col items-center gap-6">
 
-              <span className="text-gray-700 font-medium">
+              {/* Controls */}
+              <div className="flex items-center gap-2">
+
+                {/* Previous */}
+                <button
+                  onClick={goToPrev}
+                  disabled={currentPage === 1}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all
+          ${currentPage === 1
+                      ? "text-gray-400 bg-gray-100 cursor-not-allowed"
+                      : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:border-gray-400 shadow-sm"
+                    }`}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Previous
+                </button>
+
+                {/* Page Numbers */}
+                <div className="flex items-center gap-1 px-2">
+                  {[...Array(totalPages)].map((_, index) => {
+                    const page = index + 1;
+
+                    if (
+                      page === 1 ||
+                      page === totalPages ||
+                      Math.abs(page - currentPage) <= 1
+                    ) {
+                      return (
+                        <button
+                          key={page}
+                          onClick={() => fetchProducts(page)}
+                          className={`min-w-10 h-10 px-3 rounded-lg text-sm font-semibold transition-all
+                  ${page === currentPage
+                              ? "bg-green-600 text-white shadow-md scale-105"
+                              : "text-gray-700 hover:bg-gray-100 border border-transparent hover:border-gray-300"
+                            }`}
+                        >
+                          {page}
+                        </button>
+                      );
+                    }
+
+                    if (
+                      page === currentPage - 2 ||
+                      page === currentPage + 2
+                    ) {
+                      return (
+                        <span
+                          key={page}
+                          className="px-2 text-gray-400 select-none font-bold"
+                        >
+                          ···
+                        </span>
+                      );
+                    }
+
+                    return null;
+                  })}
+                </div>
+
+                {/* Next */}
+                <button
+                  onClick={goToNext}
+                  disabled={currentPage === totalPages}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all
+          ${currentPage === totalPages
+                      ? "text-gray-400 bg-gray-100 cursor-not-allowed"
+                      : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:border-gray-400 shadow-sm"
+                    }`}
+                >
+                  Next
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Page info */}
+              <div className="text-sm text-gray-600 font-medium">
                 Page {currentPage} of {totalPages}
-              </span>
-
-              <button
-                disabled={currentPage >= totalPages}
-                onClick={goToNext}
-                className={`px-5 py-2.5 rounded-lg border font-medium ${currentPage >= totalPages
-                  ? "border-gray-300 text-gray-400 cursor-not-allowed"
-                  : "border-green-600 text-green-600 hover:bg-green-50"
-                  }`}
-              >
-                Next
-              </button>
+              </div>
             </div>
           )}
+
+
         </div>
       </div>
     </div>
