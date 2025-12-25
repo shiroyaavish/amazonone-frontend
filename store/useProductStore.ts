@@ -153,7 +153,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
 
       set({
         products: data.data ?? [],
-        totalPages: data.isNextPageAvailble ? page + 1 : page,
+        totalPages: data.totalRecords ? Math.ceil(data.totalRecords / limit) : 1,
         currentPage: page,
         listLoading: false,
       });
