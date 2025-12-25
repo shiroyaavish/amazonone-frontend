@@ -510,7 +510,7 @@ export default function ProductFilter() {
                 {products.map((p, i) => (
                   <>
                     {(i + 1) % 15 == 0 && <AdBanner key={i} />}
-                    <ProductCard key={p._id} product={p} />
+                    <ProductCard key={p._id} product={p} priority={i < 4} />
                   </>
                 ))}
               </div>
@@ -525,7 +525,7 @@ export default function ProductFilter() {
                   <button
                     onClick={goToPrev}
                     disabled={currentPage === 1}
-                    className={`flex items-center justify-center min-w-[44px] h-11 px-4 rounded-lg transition-all
+                    className={`flex items-center justify-center min-w-11 h-11 px-4 rounded-lg transition-all
                       ${currentPage === 1
                         ? "text-gray-400 bg-gray-100 cursor-not-allowed"
                         : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 shadow-sm active:scale-95"
@@ -545,7 +545,7 @@ export default function ProductFilter() {
                   <button
                     onClick={goToNext}
                     disabled={currentPage === totalPages}
-                    className={`flex items-center justify-center min-w-[44px] h-11 px-4 rounded-lg transition-all
+                    className={`flex items-center justify-center min-w-11 h-11 px-4 rounded-lg transition-all
                       ${currentPage === totalPages
                         ? "text-gray-400 bg-gray-100 cursor-not-allowed"
                         : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 shadow-sm active:scale-95"

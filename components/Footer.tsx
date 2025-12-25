@@ -1,19 +1,36 @@
 "use client";
+
 import { useHomeStore } from "@/store/useHomeStore";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Footer() {
   const { categories, fetchCategoriesData } = useHomeStore();
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: any) => {
+  /* ================================
+     Fetch categories ONCE (CLS SAFE)
+  ================================= */
+  useEffect(() => {
+    fetchCategoriesData();
+  }, [fetchCategoriesData]);
+
+  /* ================================
+     Form handlers
+  ================================= */
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -26,136 +43,155 @@ export default function Footer() {
         body: JSON.stringify(form),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.message || "Something went wrong!");
-        setLoading(false);
-        return;
-      }
+      if (!res.ok) throw new Error("Request failed");
 
       setSubmitted(true);
       setForm({ name: "", email: "", message: "" });
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
       alert("Failed to send message. Try again!");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
-  useEffect(() => {
-    fetchCategoriesData()
-  }, [categories.length, fetchCategoriesData])
 
   return (
-    <footer className="bg-white border-t mt-20">
+    <footer className="bg-white border-t mt-20 min-h-[520px]">
       <div className="max-w-7xl mx-auto px-4 py-16 text-gray-700">
+
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-14">
 
-          {/* Column 1 */}
+          {/* ================= Column 1 ================= */}
           <div>
             <Link
               href="/"
               className="font-[Poppins] font-extrabold text-black select-none tracking-[0.20em]
-                text-xl sm:text-2xl lg:text-3xl"
+                         text-xl sm:text-2xl lg:text-3xl"
             >
               DEALMITRA
             </Link>
+
             <p className="mt-4 text-sm text-gray-500 leading-6 max-w-xs">
               Discover the latest gadgets, best deals, and trending tech.
             </p>
-            <br />
-            <br />
-            <h4 className="font-semibold text-base mb-4 text-black">Pages</h4>
+
+            <h4 className="font-semibold text-base mt-10 mb-4 text-black">
+              Pages
+            </h4>
+
             <ul className="text-sm text-gray-600 space-y-2">
-              <li><Link className="hover:text-black transition" href="/blog">Blogs</Link></li>
-              <li><Link className="hover:text-black transition" href="/aboutus">About Us</Link></li>
-              <li><Link className="hover:text-black transition" href="/privacy-policy">Privacy Policy</Link></li>
-              <li><Link className="hover:text-black transition" href="/how-it-works">How to Use DealMitra</Link></li>
+              <li><Link className="hover:text-black" href="/blog">Blogs</Link></li>
+              <li><Link className="hover:text-black" href="/aboutus">About Us</Link></li>
+              <li><Link className="hover:text-black" href="/privacy-policy">Privacy Policy</Link></li>
+              <li><Link className="hover:text-black" href="/how-it-works">How to Use DealMitra</Link></li>
             </ul>
           </div>
 
-          {/* Column 2 */}
+          {/* ================= Column 2 ================= */}
           <div>
-            <h4 className="font-semibold text-base mb-4 text-black">Products</h4>
-            <ul className="text-sm text-gray-600 space-y-2">
-              <li><Link className="hover:text-black transition" href="/product?isPopular=true">Popular</Link></li>
-              <li><Link className="hover:text-black transition" href="/product?newRelease=true">New Releases</Link></li>
-              <li><Link className="hover:text-black transition" href="/product?bestSeller=true">Best Seller</Link></li>
-              {categories.map((category) => (
-                <li key={category._id}>
-                  <Link className="hover:text-black transition" href={`/product?category=${category._id}`}>{category.name}</Link>
-                </li>
-              ))}
+            <h4 className="font-semibold text-base mb-4 text-black">
+              Products
+            </h4>
+
+            {/* Reserved height prevents CLS */}
+            <ul className="text-sm text-gray-600 space-y-2 min-h-[200px]">
+              <li><Link className="hover:text-black" href="/product?isPopular=true">Popular</Link></li>
+              <li><Link className="hover:text-black" href="/product?newRelease=true">New Releases</Link></li>
+              <li><Link className="hover:text-black" href="/product?bestSeller=true">Best Seller</Link></li>
+
+              {categories.length === 0
+                ? [...Array(4)].map((_, i) => (
+                    <li
+                      key={i}
+                      className="h-4 w-3/4 bg-gray-100 rounded animate-pulse"
+                    />
+                  ))
+                : categories.map((category) => (
+                    <li key={category._id}>
+                      <Link
+                        className="hover:text-black"
+                        href={`/product?category=${category._id}`}
+                      >
+                        {category.name}
+                      </Link>
+                    </li>
+                  ))}
             </ul>
           </div>
 
-          {/* Column 3 */}
+          {/* ================= Column 3 ================= */}
           <div>
-            <h4 className="font-semibold text-base mb-4 text-black">Contact Info</h4>
-            <p className="text-sm text-gray-600 leading-6 space-y-1">
-              <span>dealmitra1111@gmail.com</span><br />
+            <h4 className="font-semibold text-base mb-4 text-black">
+              Contact Info
+            </h4>
+
+            <p className="text-sm text-gray-600 leading-6">
+              dealmitra1111@gmail.com
             </p>
           </div>
 
-          {/* Column 4 - Contact Form */}
+          {/* ================= Column 4 ================= */}
           <div>
-            <h4 className="font-semibold text-base mb-4 text-black">Contact Us</h4>
+            <h4 className="font-semibold text-base mb-4 text-black">
+              Contact Us
+            </h4>
 
-            {submitted ? (
-              <div className="p-3 bg-green-50 text-green-700 rounded-lg text-sm border border-green-200">
-                Thank you! Your message has been sent.
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  placeholder="Your Name"
-                  value={form.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full border border-gray-200 rounded-lg p-2.5 text-sm"
-                />
+            {/* Fixed height prevents layout shift */}
+            <div className="min-h-[220px]">
+              {submitted ? (
+                <div className="p-3 bg-green-50 text-green-700 rounded-lg text-sm border border-green-200">
+                  Thank you! Your message has been sent.
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Your Name"
+                    value={form.name}
+                    onChange={handleChange}
+                    required
+                    className="w-full border border-gray-200 rounded-lg p-2.5 text-sm"
+                  />
 
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  placeholder="Your Email"
-                  value={form.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full border border-gray-200 rounded-lg p-2.5 text-sm"
-                />
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Your Email"
+                    value={form.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full border border-gray-200 rounded-lg p-2.5 text-sm"
+                  />
 
-                <textarea
-                  name="message"
-                  id="message"
-                  placeholder="Your Message"
-                  value={form.message}
-                  onChange={handleChange}
-                  rows={3}
-                  required
-                  className="w-full border border-gray-200 rounded-lg p-2.5 text-sm"
-                ></textarea>
+                  <textarea
+                    name="message"
+                    placeholder="Your Message"
+                    value={form.message}
+                    onChange={handleChange}
+                    rows={3}
+                    required
+                    className="w-full border border-gray-200 rounded-lg p-2.5 text-sm"
+                  />
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-black text-white text-sm py-2.5 rounded-lg hover:bg-gray-900 transition"
-                >
-                  {loading ? "Sending..." : "Send Message"}
-                </button>
-              </form>
-            )}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-black text-white text-sm py-2.5 rounded-lg
+                               hover:bg-gray-900 transition"
+                  >
+                    {loading ? "Sending..." : "Send Message"}
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
         </div>
 
+        {/* ================= Footer Bottom ================= */}
         <div className="mt-14 text-center text-sm text-gray-400 border-t pt-6">
           © {new Date().getFullYear()} DealMitra.online. All rights reserved.
         </div>
+
       </div>
     </footer>
   );

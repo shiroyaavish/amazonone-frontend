@@ -4,6 +4,7 @@ import { Heart, Star, Scale, Check } from "lucide-react";
 import { useWishlistStore } from "@/store/useWishlistStore";
 import { useProductStore } from "@/store/useProductStore";
 import { useCompareStore } from "@/store/useCompareStore";
+import Image from "next/image";
 // import { useRouter } from "next/router";
 
 interface Product {
@@ -19,7 +20,7 @@ interface Product {
     availability: boolean;
 }
 
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({ product, priority = false }: { product: Product, priority: boolean }) {
     // const router = useRouter()
     const { wishlist, addToWishlist, removeFromWishlist } = useWishlistStore();
     const { addProduct, products, removeProduct } = useCompareStore();
@@ -57,11 +58,19 @@ export default function ProductCard({ product }: { product: Product }) {
         <div className="group bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-green-200 transition-all duration-300 hover:shadow-lg">
             <Link href={`/product/${product.slug}`} onClick={() => onClickhandle(product._id)}>
                 <div className="relative aspect-square overflow-hidden bg-gray-50">
-                    <img
+                    <Image
                         src={product.imageUrls?.[0]}
                         alt={product.title}
+                        fill
+                        priority={priority}
+                        sizes="(max-width: 640px) 50vw,
+         (max-width: 1024px) 33vw,
+         20vw"
                         className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                        placeholder="blur"
+                        blurDataURL="/blur.png"
                     />
+
 
                     {/* Product Tag */}
                     {(product.isPopular || product.bestSeller || product.newRelease || discount > 0) && (
@@ -105,8 +114,8 @@ export default function ProductCard({ product }: { product: Product }) {
                             onClick={handleCompareToggle}
                             disabled={!isInCompare && !canAddToCompare}
                             className={`w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-md transition ${!isInCompare && !canAddToCompare
-                                    ? "opacity-50 cursor-not-allowed"
-                                    : "hover:scale-110"
+                                ? "opacity-50 cursor-not-allowed"
+                                : "hover:scale-110"
                                 }`}
                             aria-label={isInCompare ? "Remove from compare" : "Add to compare"}
                             title={!isInCompare && !canAddToCompare ? "Maximum 4 products can be compared" : ""}
