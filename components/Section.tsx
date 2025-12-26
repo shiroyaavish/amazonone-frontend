@@ -46,6 +46,8 @@ export default function Section({ title, products = [], id = null }: SectionProp
       return handleViewNewReleases();
     } else if (id === "popular_products") {
       return handleViewPopular();
+    } else if (id === "products") {
+      return `/product`;
     } else {
       return handleViewCategory(title, id);
     }
@@ -64,7 +66,7 @@ export default function Section({ title, products = [], id = null }: SectionProp
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {products.map((p, i) => (
           <>
-            <ProductCard key={p._id} product={p} />
+            <ProductCard key={p._id} product={p} priority={i < 3} />
           </>
         ))}
       </div>

@@ -49,7 +49,7 @@ export default function SuggestionCarousel({ slug }: { slug: string }) {
               key={product._id}
               className="min-w-[50%] sm:min-w-[35%] md:min-w-[25%] lg:min-w-[19%]"
             >
-              <ProductCard product={product} />
+              <ProductCard product={product} priority={false} />
             </div>
           ))}
         </div>

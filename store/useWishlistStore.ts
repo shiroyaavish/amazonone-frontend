@@ -83,9 +83,9 @@ export const useWishlistStore = create<WishlistState>()(
             productId: currentIds,
           });
 
-          if (Array.isArray(data.data)) {
+          if (Array.isArray(data.data.data)) {
             set({
-              products: data.data,
+              products: data.data.data,
               totalPages,
               currentPage: page,
               loading: false,

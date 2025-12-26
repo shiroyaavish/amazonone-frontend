@@ -27,6 +27,7 @@ interface Category {
 
 interface HomeState {
   popular: Product[];
+  products: Product[];
   newRelease: Product[];
   bestSeller: Product[];
   categoryWithProducts: CategoryWithProducts[];
@@ -41,6 +42,7 @@ export const useHomeStore = create<HomeState>((set) => ({
   popular: [],
   newRelease: [],
   bestSeller: [],
+  products: [],
   categoryWithProducts: [],
   categories: [],
   loading: false,
@@ -50,46 +52,19 @@ export const useHomeStore = create<HomeState>((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const popularReq = apiHelpers.get("/product", {
-        page: 1,
-        limit: 6,
-        isPopular: true,
-      });
-
-      const newReq = apiHelpers.get("/product", {
-        page: 1,
-        limit: 6,
-        newRelease: true,
-      });
-
-      const bestReq = apiHelpers.get("/product", {
-        page: 1,
-        limit: 6,
-        bestSeller: true,
-      });
-
-      const catReq = apiHelpers.get("/category/products");
+      const productsReq = apiHelpers.post("/product/top30Products",);
       const categoriesReq = apiHelpers.get("/category");
 
       const [
-        popularData,
-        newData,
-        bestData,
-        catData,
+        productsData,
         categoriesData,
       ]: any[] = await Promise.all([
-        popularReq,
-        newReq,
-        bestReq,
-        catReq,
+        productsReq,
         categoriesReq,
       ]);
 
       set({
-        popular: popularData.data ?? [],
-        newRelease: newData.data ?? [],
-        bestSeller: bestData.data ?? [],
-        categoryWithProducts: catData.data ?? [],
+        products: productsData.data?.data ?? [],
         categories: categoriesData.data ?? [],
         loading: false,
       });
