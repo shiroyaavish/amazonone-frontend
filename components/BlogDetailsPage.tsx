@@ -97,7 +97,7 @@ export default function BlogDetailsPage({ slug }: { slug: string }) {
 
                     <div className="grid md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-6">
                         {blog.productIds.map((p: any, i: number) => (
-                            <ProductCard product={p} />
+                            <ProductCard product={p} priority={i < 3} key={p._id}/>
                         ))}
                     </div>
                 </section>
